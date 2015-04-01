@@ -1,0 +1,17 @@
+%Test Plan
+\begin{landscape}
+	\section{Test Plan}
+	
+	\begin{table}[h]
+		\begin{tabular}{| l | p{7cm} | p{7cm} | p{4cm} | l |}
+			\hline
+			ID & Description & Expected Result & Possible Failures & Pass/Fail \\ \hline
+			
+			0 & Node reports failure if unable to connect to a local tor control connection. & Stor throws an exception, mentioning that a connection could not be made and explaining how to fix it. & Case not checked. \newline Exception not thrown. & \\ \hline
+			
+			1 & New node creates a hidden service & Stor finds no existing hidden service and creates one using the control connection. Can be tested by establishing a connection to the hidden service through Tor. & Failure to detect no existing hidden service exists. \newline Hidden service is not created. & \\ \hline
+			
+			2 & Read configuration and use parameters & Stor uses the configuration file to establish a secure control connection to the local tor instance. & Does not read config. \newline Does not use values in config. & \\ \hline
+		\end{tabular}
+	\end{table}
+\end{landscape}

@@ -1,0 +1,50 @@
+\section{Research and Literature Review}
+
+	\subsection{Existing Systems and Technologies}
+		\subsubsection*{Bitmessage}\label{bitmessage_existing}
+			Bitmessage is a P2P communications protocol that enables parties to communicate with messages. Each party\footnote{A party may or not be a participating node.} holds at most 8 connections to other nodes in the network. Inserting a message into the network is done by encrypting the message for the recipient and forwarding it along all the connections. Nodes store messages for 2 days before they are removed. To retrieve a message, each message must be acquired and decrypted. Although Bitmessage's aim is a secure communications network, it does not address anonymity, having the undesirable affect that it is possible to tell who is using the network. Although it is possible to run Bitmessage over Tor, a node doing this is not able to accept connections~\cite{bitmsg}.
+		\subsubsection*{Freenet}\label{freenet_existing}
+			Freenet is an anonymous storage network that attempts to implement its own anonymity layer. Files are inserted and retrieved by relaying requests through successive nodes until a request is successful or until the request's TTL expires. As a file is successfully relayed back to the requester, each node also caches it~\cite{clarke2001freenet}.
+			
+			Because Freenet uses direct connections between nodes, the limiting factor for network speed is the slowest node in the request chain. However, if all nodes are reasonably fast, Freenet has a high potential for fast transfer speeds.
+		\subsubsection*{Tor}
+			Tor is an anonymity network that implements onion routing to obscure traffic patterns. The Tor network consists of relays run by volunteers. While most Tor relays only route traffic around the Tor network, some allow networks to be made to the wider Internet from within the Tor. Under typical usage conditions, onion routing will select a collection of these relays from the public list of relays, using an exit relay as the last relay if the destination is on the wider Internet. The data stream is then encrypted with successive layers of asymmetric encryption using the relay public keys so that when a relay receives some data, it can decrypt it and forward it to the next destination~\cite{dingledine2004tor}.
+			
+			A key feature of Tor are its hidden services, which are services that are hard to physically locate, meaning that it is possible to run services anonymously. Tor's hidden services provide identity verification using the 16 character onion address and as all communications stay within Tor, all traffic is encrypted. The technical specification of hidden service creation, discovery and rendezvous can be found at~\cite{tor_rend}.
+			\todo[inline]{Tor}
+	\subsection{Problems and Issues}
+		\subsubsection*{Lifetime of Data}
+			-What is lifetime
+			-Why it is important
+			-Freenet does not offer this
+			-Bitmessage does (2 days), extension through repeated insertion
+		\subsubsection*{Visibility of the Network}
+			-Ideally, the existence of nodes would only be known to those participating in the network (Freenet's darknets)
+		\subsubsection*{Deanonymization Attacks}
+			-Mention anonymity/performance trade-off
+		\subsubsection*{Sybil Attacks} \label{sybil_problems}
+			On any network, it may be possible for one user to control many identities, and therefore pretending to be many users. This can cause issues in any system attempting to use consensus based on identity. The typical remedy for this attack is to link a high-cost, resource to identities. IPv4 addresses are commonly used for this purpose, as there is a relatively small finite pool and spoofing is considered difficult. IPv6, with it's relatively large pool of addresses may not offer such protection~\cite{cholez2009evaluation}.
+		
+			Due to the nature of anonymous networks, it is not possible to use identifiers, such as IP addresses, as a resource. Instead, different attack negation mechanisms must be used. A trusted central authority could assign identities which could then be used on the anonymous network, but introduced a centralised point of failure. Proof-of-works may offer a solution, where elements of a system with any form of consensus can be protected with a guarantee that a valid proof-of-work required some resource to be used. A requirement for a proof-of-work for all communications could render a large Sybil attack difficult \cite{borisov2006computational}, although this could decrease network availability to some users.
+		
+			Alternatively, the use of a trust system with cluster analysis could detect and blacklist clusters of malicious nodes
+			\todo[inline]{finish}
+		\subsubsection*{Spamming and Denial of Service Attacks}
+			While partially related to Sybil attacks (section \ref{sybil_problems}), denial of service attacks attempt to limit the availability of the network. In the context of a distributed storage network, this could quite easily come from a user constantly pushing data to the network and therefore filling the network's storage capacity.
+			
+			To prevent this kind of attack, some form of consensus is required to determine what data is legitimate, but as discussed in section~\ref{sybil_problems}, anonymous distributed consensus can be achieved through the use of 
+	\subsection{Noted Solutions}
+		\subsubsection*{Stenography}
+		\subsubsection*{Darknets}
+	\subsection{Existing Systems}
+	\subsection{Technologies}
+		\subsubsection*{BitTorrent}
+			\todo[inline]{BitTorrent}
+		\subsubsection*{Proof-of-Work}
+			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of Proof-of-Work (POW) algorithms.
+			
+			A POW is a guarantee that some resource has been used to create it. In many cases, this will in the form of a CPU-bound POW where a heavy computation is required to produce a proof that is easy to verify. Originally described in \cite{back2002hashcash}, Hashcash uses a CPU-bound POW to compute partial hash inversions. While this is common, CPU-bound POW can typically be computed quickly on Graphical Processing Units (GPUs), and even faster on Application Specific Integrated Circuits (ASICs). This has a high potential to cause a rift between those using low power devices and those able to create or afford hardware such as ASICs. This gap has been observed with Bitcoin~\cite{peck2013bitcoin}.
+			
+			Memory-bound POWs are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound POWs, this has significant potential to address inequality of availability for those generating POWs, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.
+	\subsection{Cryptography}
+		\todo[inline]{Crypto\\Asymmetric?\\Symmetric?\\Hybrid\\Padding Schemes\\Digital Signatures}

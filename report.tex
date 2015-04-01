@@ -1,7 +1,14 @@
-\documentclass[]{article}
-
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=3.5cm]{geometry}
 \usepackage[simplified]{pgf-umlcd}
 \usepackage{subfiles}
+\usepackage{titling}
+\usepackage{rotating}
+\usepackage{pdflscape}
+\usepackage{todonotes}
+\usepackage{tabularx}
+\setlength{\parskip}{1\baselineskip}
+\setlength{\parindent}{0pt}
 
 %opening
 \title{}
@@ -9,17 +16,37 @@
 
 \begin{document}
 
-\maketitle
+\begin{titlingpage}
+	\input{title}
+\end{titlingpage}
 
-\begin{abstract}
 
-\end{abstract}
+\tableofcontents
+
+
+\include{project-goals}
+\include{research-and-literature-review}
+\include{design}
+\include{implementation-and-testing}
+\include{review-and-future-work}
+
+
+
+\newpage
+\raggedright
+\bibliographystyle{plain}
+\bibliography{report}
+
+\appendix
+
+\include{testplan}
+
+\begin{landscape}
+	\section{Management}
+\end{landscape}
 
 \begin{figure}
-	\frame{
 	\include{umltest}
-	
-}
 	\caption{DataPacket Class Diagram}
 \end{figure}
 
