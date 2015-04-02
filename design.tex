@@ -1,7 +1,30 @@
 \section{Design}
+	\subsection{Considered Designs}
+		Several key elements of a storage network were identified and different design decisions based around these elements were considered.
+		
+		General idea:
+			A sender will perform some function on a message such that a receiver for that message can perform the inverse of the function to determine if the message is for them. In practice, these functions will likely be public key cryptographic functions.
+		
+		Information Distribution and Delivery
+			Keep the system general
+			Unless a loss in anonymity, everyone must check if a message is for them
+			STREAMS!!! - mention dangers of these though...
+			
+		Node discovery and initial connection / connection topology.\\
+		\input{internodal-connections}
+		
+			
+		Inter-nodal connections
+		Data storage
+		Broadcast handling
+		\subsubsection{Protocol}
+			The protocol dictates how nodes interact with each other and how they should organise themselves.
+			
+			In some existing networks, such as Freenet, nodes organise themselves into a ``small-world topology'', where all nodes can connect to each other with a small number of hops. One of the reasons this is done in Freenet is to allow for 
 	\subsection{Key Use Cases}
 		-General Overview of How the System should be used
 		\subsubsection*{Node Discovery}
+			In order for a prospective node to connect to the network, it must have some method of finding additional nodes. 
 			-Initial Node
 			-List of Nodes
 			-Check if nodes are connected
@@ -10,3 +33,8 @@
 			-Determine what Proof of Work to use
 			-Generate Proof of Work
 			-Send to connected nodes
+			
+	\subsection{Final Design}
+		\subsubsection{Protocol}
+			
+		\subsubsection{API}

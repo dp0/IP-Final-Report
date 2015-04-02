@@ -1,0 +1,25 @@
+\begin{equation} \label{eq:internodalconnections}
+\Bigg(\prod_{i=0}^{n}\bigg(1 - \frac{1}{N-1-i}\bigg)\Bigg)^{N-1}
+\end{equation}
+
+\begin{figure}[h!]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{semilogyaxis}[
+			compat=1.3,
+			width=0.8\linewidth, % Scale the plot to \linewidth
+			height=0.6\linewidth,
+			grid=major, % Display a grid
+			grid style={dashed,gray!30}, % Set the style
+			xlabel=Number of nodes in network,
+			ylabel=Probability,
+			xmin=0, xmax=3000, xtick={0,500,1000,1500,2000,2500,3000}
+		]
+		\addplot[blue] 
+		table[x=column 1,y=column 2,col sep=comma] {inc-data.csv}; 
+		\end{semilogyaxis}
+		\end{tikzpicture}
+		\caption{Probability of a node not being selected by any node for inter-nodal communications}
+		\label{fig:internodalconnections}
+	\end{center}
+\end{figure}

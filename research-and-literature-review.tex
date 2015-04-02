@@ -12,6 +12,14 @@
 			
 			A key feature of Tor are its hidden services, which are services that are hard to physically locate, meaning that it is possible to run services anonymously. Tor's hidden services provide identity verification using the 16 character onion address and as all communications stay within Tor, all traffic is encrypted. The technical specification of hidden service creation, discovery and rendezvous can be found at~\cite{tor_rend}.
 			\todo[inline]{Tor}
+		\subsubsection*{BitTorrent}
+			\todo[inline]{BitTorrent}
+		\subsubsection*{Proof-of-Work}
+			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of Proof-of-Work (POW) algorithms.
+			
+			A POW is a guarantee that some resource has been used to create it. In many cases, this will in the form of a CPU-bound POW where a heavy computation is required to produce a proof that is easy to verify. Originally described in \cite{back2002hashcash}, Hashcash uses a CPU-bound POW to compute partial hash inversions. While this is common, CPU-bound POW can typically be computed quickly on Graphical Processing Units (GPUs), and even faster on Application Specific Integrated Circuits (ASICs). This has a high potential to cause a rift between those using low power devices and those able to create or afford hardware such as ASICs. This gap has been observed with Bitcoin~\cite{peck2013bitcoin}.
+			
+			Memory-bound POWs are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound POWs, this has significant potential to address inequality of availability for those generating POWs, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.\todo{Add challenge-response and solution-verify?}
 	\subsection{Problems and Issues}
 		\subsubsection*{Lifetime of Data}
 			-What is lifetime
@@ -21,6 +29,9 @@
 		\subsubsection*{Visibility of the Network}
 			-Ideally, the existence of nodes would only be known to those participating in the network (Freenet's darknets)
 		\subsubsection*{Deanonymization Attacks}
+			In the past, anonymous services deemed to be secure have been subject to deanonymization attacks. An example of this is the take down of Silk Road, a black market hosted using Tor's hidden services. Although there is a question over how Silk Road was taken down, given that it was a centralised service, with a single party in control, it could not be considered secure, as removing just 1 server removed the entire service's availability.
+			
+			-Freenet attempts to implement anonymity...........
 			-Mention anonymity/performance trade-off
 		\subsubsection*{Sybil Attacks} \label{sybil_problems}
 			On any network, it may be possible for one user to control many identities, and therefore pretending to be many users. This can cause issues in any system attempting to use consensus based on identity. The typical remedy for this attack is to link a high-cost, resource to identities. IPv4 addresses are commonly used for this purpose, as there is a relatively small finite pool and spoofing is considered difficult. IPv6, with it's relatively large pool of addresses may not offer such protection~\cite{cholez2009evaluation}.
@@ -34,17 +45,11 @@
 			
 			To prevent this kind of attack, some form of consensus is required to determine what data is legitimate, but as discussed in section~\ref{sybil_problems}, anonymous distributed consensus can be achieved through the use of 
 	\subsection{Noted Solutions}
-		\subsubsection*{Stenography}
+		\subsubsection*{Steganography}
+				Although steganography is typically used for hiding information away in order to achieve a questionable level of confidentiality, steganography can also be used to conceal information in something that it was not necessarily designed to hold it. An example is the Bitcoin Message service~\cite{bitmsg} that allows users to insert messages into the Bitcoin blockchain, hence distributing a copy of the message to everyone running a Bitcoin client. This message distribution mechanism gives high availability to anyone subscribed to a given information stream. This same mechanism could be applied to the design of a storage network in an unlikely way.
+				
+				One of the potential issues with creating a fully decentralised storage network is the discovery of new nodes. This is especially true for finding the initial node to connect with. Given that all users of Tor have access to Tor directory nodes, it was hoped that hidden services descriptors could provide an information stream that could be used for steganography, however due to the nature of Tor's directory nodes, this is difficult. However, there have been reports that hidden service descriptors can be acquired through the running of a rouge relay, as described in~\cite{crawl}. This method however, is highly unreliable and requires the running of a Tor relay, which would only be eligible to be a HSDir after running for at least 25 hours, meaning very high levels of effort. Given extreme level of effort required, using Tor's hidden service descriptors for steganography has been deemed infeasible.\todo{Could add more detail}
 		\subsubsection*{Darknets}
-	\subsection{Existing Systems}
-	\subsection{Technologies}
-		\subsubsection*{BitTorrent}
-			\todo[inline]{BitTorrent}
-		\subsubsection*{Proof-of-Work}
-			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of Proof-of-Work (POW) algorithms.
-			
-			A POW is a guarantee that some resource has been used to create it. In many cases, this will in the form of a CPU-bound POW where a heavy computation is required to produce a proof that is easy to verify. Originally described in \cite{back2002hashcash}, Hashcash uses a CPU-bound POW to compute partial hash inversions. While this is common, CPU-bound POW can typically be computed quickly on Graphical Processing Units (GPUs), and even faster on Application Specific Integrated Circuits (ASICs). This has a high potential to cause a rift between those using low power devices and those able to create or afford hardware such as ASICs. This gap has been observed with Bitcoin~\cite{peck2013bitcoin}.
-			
-			Memory-bound POWs are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound POWs, this has significant potential to address inequality of availability for those generating POWs, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.
+			\todo[inline]{Darknets}
 	\subsection{Cryptography}
 		\todo[inline]{Crypto\\Asymmetric?\\Symmetric?\\Hybrid\\Padding Schemes\\Digital Signatures}

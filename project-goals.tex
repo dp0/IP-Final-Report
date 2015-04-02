@@ -1,4 +1,22 @@
 \section{Project Goals}
 	Over the past few years, there has been a shift towards decentralised services where protocols dictate how users interact with the system. This can be seen with Bitcoin, a decentralised currency based on cryptographic algorithms \todo{Add a bit more?} to ensure that only those following the protocol can use the system.
 	
-	In the world of anonymity, there is an increased interest in deanonymization attacks and they are becoming more common, either through erosion of anonymisation technologies, social engineering or a combination.
+	\todo[inline]{Mention increase in interest since NSA revelations?}
+	
+	In the world of anonymity, there is an increased interest in deanonymization attacks and they are becoming more common, either through erosion of anonymisation technologies, social engineering or other means.
+	
+	Security is a broad term that means different things in different contexts, but in this project, it refers to the CIA triad, that is, security is achieved with confidentiality, integrity and availability. Centralised services can be seen as a single point of failure, which increases the possibility of an attack on availability. Centralised services that do not provide end-to-end encryption may also present issues for confidentiality and integrity. For this reason, a centralised service may decrease the security of a system.
+	
+	Prior to the project, when deciding on a topic, a secure distributed anonymous ``social network'' was envisioned, however there was no existing underlying network that was suitable for purpose.
+	
+	This project offers a solution to the problem of secure anonymous communications by proposing a P2P data storage network that can be run on existing anonymous infrastructure. The storage network will remove centralisation risks by enabling anyone to contribute to the network's resources. The aim of the network is to allow anonymous parties to communicate asynchronously and in a decentralised way. Through this mechanism of communication, services will be able to store their state, therefore allowing parties to act on this state and change it accordingly.
+	
+	The network shall be designed to satisfy the properties:
+	\begin{enumerate}
+		\item Users of the network cannot be identified
+		\item The contents of a packet can only be read by a recipient
+		\item The sender of a packet cannot be identified by anyone except the recipient
+		\item The recipient of a packet cannot be identified by anyone except the sender
+	\end{enumerate}
+	
+	The project has focused on the creation of 2 elements, the protocol for the network and an API to access it. The protocol is an abstract concept that describes how members of the network organise themselves, topologically speaking, and how they communicate. The API is a more concrete entity that implements the protocol to allow other applications to communicate using the network.
