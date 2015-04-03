@@ -1,9 +1,36 @@
-\section{Design}
+\section{Design} \label{design}
+
+	\subsection{Network and API Usage}
+
+	Before the design can be considered, the expected use of the network must be examined. Although the network is for the storage of data, this data is not intended to be in the form of large files, rather, it is expected that services can use the network to store their state. An concrete example of such a service could be a distributed ``social network'', where users can associate with each other and update their profile and make posts. Upon such actions, the user performing the action would send an update to each user they associate with, which each user would later receive.
+
+	Any service will desire a guarantee on availability, so this must be taken into account.
+
+	The main aim of the protocol is to write the rules of inter-nodal communication within the network. The protocol should therefore define how a node can connect to the network and find other nodes, the process of transferring data between nodes and suggestions on how this data should be stored. 
+
+	The general idea for the network is that the API will be able to take a message, apply some function to this and distribute it across the network to make it highly available, such that the function makes the message unreadable to anyone that is not a recipient. To retrieve a message for a particular user, all data in the network can have the inverse function applied to it to retrieve messages intended for them. This high-level abstraction is shown in \todo[inline]{Need to add sequence diagram}. In reality, this function is likely to be a form of asymmetric cryptography operating on the public key of the recipient and the inverse an operation of the recipient's private key.\todo{Move?}
+	
 	\subsection{Considered Designs}
-		Several key elements of a storage network were identified and different design decisions based around these elements were considered.
+		Several key elements of a storage network were identified and different design decisions based around these elements were considered. 
 		
-		General idea:
-			A sender will perform some function on a message such that a receiver for that message can perform the inverse of the function to determine if the message is for them. In practice, these functions will likely be public key cryptographic functions.
+		\subsubsection*{Network Connectivity}
+			In order to join the network, a node must have some knowledge of where to find other nodes. This can be achieved either through the use of some central authority that holds a list of nodes, enabling anyone to acquire the knowledge to use the network, or each node can act as a part of a decentralised directory, where as long as one node can be connected to, the remaining participants of the network can be discovered.
+			
+			Neither solution is flawless: the central authority could reduce security by providing a more important class of node that could be seen as a target by an adversary, while the acquisition of the knowledge needed to connect to the initial node would have to occur out-of-band.
+			
+			Although the initial connection node may seem to be much the same as the central authority, it could be possible to have several of these initial connection nodes, and as long as they are members of the network, this should be acceptable.
+			
+			As the introduction of a central authority presents too much risk and lowers the amount of freedom compared to a distributed directory, the API should provide a mechanism to allow users of the API to set initial connection nodes in order to discover the rest of the network.		
+		\subsubsection*{Information Distribution and Delivery}
+			Distributing the information across the network must occur in order to keep the availability of information high. In order to receive a message, everyone must either check every message, or there must be some form of delegation to a third party, or third parties, that must check perform the same role.
+			
+			Systems, such as Bitmessage, take the approach that everyone can attempt to determine if a message is for them, whereas other systems, such as email, take advantage that the recipient of a message can be determined and use this place the message in a predictable location. Other networks, such as Freenet, externalise \todo{change?} the obligation of notification to out-of-band communications, meaning they do not address this issue.\todo{move?}
+			
+			As the Bitmessage network grows, it splits into ``streams''~\cite{bitmsg}, effectively creating smaller disjoint networks. Membership of a stream can be a function of some identifying element of the user, such as a public key. Although this method is promising in the promises for scalability, it has some disadvantages for the anonymity of the network. This type of optimisation is only possible where each stream has enough members such that if the stream was isolated, the property of anonymity would hold. Under the assumption that there is a partial injection from users to nodes, it is enough for the node membership under any stream for be sufficiently high. However, if this assumption cannot be made, then it may be the case that some form of deanonymization attack is taking place. The worst-case for this attack is that it may be possible to determine the public key, and therefore the identity, that a node is interested in retrieving messages for. This would occur where an adversary is able to control a significant amount of nodes such that the network splits and existing nodes organise themselves so they are members of the streams
+			
+			\input{streams-1}
+			
+			While everyone needs to check all messages to a certain extent, this mechanism is only required to notify of a message. Hence, instead of combining the notification and data functionality in a single packet, and having everyone acquire all of these, a split can be made. This would still require everyone to acquire and check all the notification packets, but these notifications could point to a data packet elsewhere on the network, along with a collection of nodes that are known to be in possession of these data packets.
 		
 		Information Distribution and Delivery
 			Keep the system general
@@ -21,18 +48,7 @@
 			The protocol dictates how nodes interact with each other and how they should organise themselves.
 			
 			In some existing networks, such as Freenet, nodes organise themselves into a ``small-world topology'', where all nodes can connect to each other with a small number of hops. One of the reasons this is done in Freenet is to allow for 
-	\subsection{Key Use Cases}
-		-General Overview of How the System should be used
-		\subsubsection*{Node Discovery}
-			In order for a prospective node to connect to the network, it must have some method of finding additional nodes. 
-			-Initial Node
-			-List of Nodes
-			-Check if nodes are connected
-			-Periodic updating of 
-		\subsubsection*{Data Insertion}
-			-Determine what Proof of Work to use
-			-Generate Proof of Work
-			-Send to connected nodes
+
 			
 	\subsection{Final Design}
 		\subsubsection{Protocol}

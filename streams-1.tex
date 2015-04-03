@@ -1,0 +1,72 @@
+% Diagrams produced from modified code originally made by andrino Claudio 2011 - http://claudiofiandrino.altervista.org/
+
+\definecolor{pinegreen}{cmyk}{0.92,0,0.59,0.25}
+\definecolor{royalblue}{cmyk}{1,0.50,0,0}
+\definecolor{lavander}{cmyk}{0,0.48,0,0}
+\definecolor{violet}{cmyk}{0.79,0.88,0,0}
+
+\tikzstyle{legend_overlay}=[rectangle, rounded corners, thin,
+top color= white,bottom color=gray!25,
+minimum width=2.5cm, minimum height=0.8cm,
+black,rotate=90]
+\tikzstyle{legend_general}=[rectangle, rounded corners, thin,
+top color= gray!15,bottom color=gray!5,
+minimum width=2.5cm, minimum height=0.8cm,
+black]
+\begin{figure}
+	\begin{center}
+	\begin{tikzpicture}[auto, thick]
+	\tikzstyle{vertex}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+
+	\node[legend_overlay] at (-6.5,0){\textsc{Before Split}};
+	\node[legend_overlay] at (-6.5,-5){\textsc{After Split}};
+	
+	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] at (0,0) {};
+	\node[legend_general] at (0,1.6){\textsc{Stream for PKs 0* to f*}};
+	\foreach \name/\y/\pk in {a/0/PK: 0fa79\ldots, b/0.7/PK: c2955\ldots, c/1.4/PK: 3795a\ldots, d/2.1/PK: ee775\ldots} {
+		\node[vertex] (A-\name) at (-1.3,0.8-\y) {$\name$};	\node[right] (A-label-a) at (-1,0.8-\y) {$\pk$};
+	}
+	
+	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] at (-3,-5) {};
+	\node[legend_general] at (-3,-3.9){\textsc{Stream for PKs 0* to 7*}};
+	\foreach \name/\y/\pk in {a/0/PK: 0fa79\ldots, c/0.7/PK: 3795a\ldots} {
+		\node[vertex] (B-\name) at (-4.3,-5-\y) {$\name$};	\node[right] (B-label-a) at (-4,-5-\y) {$\pk$};
+	}
+	
+	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] at (3,-5) {};
+	\node[legend_general] at (3,-3.9){\textsc{Stream for PKs 8* to f*}};
+	\foreach \name/\y/\pk in {b/0/PK: c2955\ldots, d/0.7/PK: ee775\ldots} {
+		\node[vertex] (C-\name) at (1.7,-5-\y) {$\name$};	\node[right] (C-label-a) at (2.0,-5-\y) {$\pk$};
+	}
+	
+	\draw[-latex, thick, black] (-1,-2) -- (-3.1,-3.3);
+	\draw[-latex, thick, black] (1,-2) -- (3.1,-3.3);
+	\end{tikzpicture}
+	\caption{Example of intended stream usage}
+	\label{fig:stream-normal}
+	\end{center}
+\end{figure}
+
+
+\begin{figure}
+	\begin{center}
+	\begin{tikzpicture}[auto, thick]
+	\tikzstyle{vertex}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+	
+	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] at (0,0) {};
+	\node[legend_general] at (0,1.6){\textsc{Stream for PKs 0fa*}};
+	
+	\foreach \name/\y/\pk in {E/0/PK: 0fa73\ldots, F/0.7/PK: 0fa18\ldots, H/2.1/PK: 0fa9c\ldots} {
+		\node[vertex, fill=red, text=white] (A-\name) at (-1.3,0.8-\y) {$\name$};
+		\node[right, text=red] (A-label-a) at (-1,0.8-\y) {$\pk$};
+	}
+	
+	\foreach \name/\y/\pk in {g/1.4/PK: 0faf2\ldots} {
+		\node[vertex] (A-\name) at (-1.3,0.8-\y) {$\name$};
+		\node[right] (A-label-a) at (-1,0.8-\y) {$\pk$};
+	}
+	\end{tikzpicture}
+	\caption{Example of malicious nodes isolating a legitimate node}
+	\label{fig:stream-malicious}
+	\end{center}
+\end{figure}
