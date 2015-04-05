@@ -1,0 +1,193 @@
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+					width=0.8\linewidth,
+					height=0.4\linewidth,
+					xlabel=Network Size / nodes,
+					ylabel=Simulation Lag / simulation ticks,
+					legend entries={$150\cdot10^6$, $200\cdot10^6$, $300\cdot10^6$},
+					legend pos=south east
+				]
+			%	\addlegendentry{\hspace{-.6cm}\textbf{Time}}
+				\addplot[
+					scatter,
+					only marks,
+					point meta=explicit symbolic,
+					scatter/classes={
+						a={mark=square*,black},
+						b={mark=o,draw=red},
+						d={mark=triangle*,blue}
+						},
+				]
+				table[meta=label] {
+					x y label
+					25	24541 a
+					30	907572 a
+					35	304920 a
+					40	616387 a
+					45	1031117 a
+					50	864221 a
+					55	258485 a
+					60	653754 a
+					65	809943 a
+					70	1048788 a
+					75	1026927 a
+					80	2100095 a
+					90	6288081 a
+					85	5590600 a
+					95	11880910 a
+					100	10815227 a
+					105	14100952 a
+					110	20324960 a
+					115	26029089 a
+					125	30645860 a
+					120	25923148 a
+					130	36772925 a
+					135	43713637 a
+					140	46817286 a
+					150	57932035 a
+					145	49191305 a
+					155	52311392 a
+					25	357262 b
+					30	33972 b
+					35	1112397 b
+					40	540416 b
+					45	61033 b
+					50	1082894 b
+					55	775513 b
+					60	1163609 b
+					65	2553731 b
+					70	6156550 b
+					75	6463167 b
+					80	10478434 b
+					85	16933039 b
+					95	24665926 b
+					90	26465847 b
+					110	39154681 b
+					100	33453911 b
+					115	58362416 b
+					105	46980354 b
+					25	846698 d
+					35	269968 d
+					30	541413 d
+					40	228635 d
+					45	811461 d
+					50	1057005 d
+					55	2725045 d
+					60	9102614 d
+					65	17391255 d
+					70	22003664 d
+					80	43466949 d
+					75	35927541 d
+					85	55167398 d	
+				};
+			\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Simulation lag for network sizes for varying simulation lengths (UAP)}
+		\label{fig:simulation-lag}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{axis}[
+			width=0.8\linewidth,
+			height=0.4\linewidth,
+			xlabel=Simulation Time / simulation ticks,
+			ylabel=Critial Point of Failure / nodes,
+			xtick={100e6,150e6,200e6,250e6,300e6}
+		]
+		\addplot[
+		scatter,
+		scatter/use mapped color={draw=none, fill=blue}
+		]
+		table {
+			x y
+			100e6	115
+			150e6	80
+			200e6	65
+			250e6	60
+			300e6	55
+		};
+		\end{axis}
+		\end{tikzpicture}
+		\caption{Critical point of failure for simulation lengths (UAP)}
+		\label{fig:critical-point}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=0.8\linewidth,
+		height=0.5\linewidth,
+		xlabel=Network Size / nodes,
+		ylabel=Bandwidth Used / bytes,
+		legend entries={Universal, Selective, Forward},
+		legend pos=north west
+		]
+		%	\addlegendentry{\hspace{-.6cm}\textbf{Time}}
+		\addplot[
+		scatter,
+		only marks,
+		point meta=explicit symbolic,
+		scatter/classes={
+			universal={mark=square*,cyan},
+			selective={mark=o,draw=green},
+			forward={mark=triangle*,red}
+		},
+		]
+		table[meta=label] {
+			x y label
+			25 456019780 forward
+			35 872253165 forward
+			45 1048887570 forward
+			55 1573692515 forward
+			65 1881124400 forward
+			75 2262434505 forward
+			85 2771544750 forward
+			95 3573927345 forward
+			105 3411036380 forward
+			115 4092502880 forward
+			125 4807955340 forward
+			135 4384191915 forward
+			145 4602090000 forward
+			155 5055210185 forward
+
+			25 677312540 universal
+			35 1287235525 universal
+			45 2185638925 universal
+			55 3304297955 universal
+			65 4545322280 universal
+			75 5936811385 universal
+			85 7265776430 universal
+			95 7945404335 universal
+			
+			25 85397100 selective
+			35 147088405 selective
+			45 235060850 selective
+			55 333573715 selective
+			65 466682360 selective
+			75 602788785 selective
+			85 754004910 selective
+			95 979054255 selective
+			105 1156023540 selective
+			115 1351527220 selective
+			125 1604653050 selective
+			135 1832297135 selective
+			145 2127906425 selective
+			155 2361108570 selective
+			165 2540262770 selective
+			175 2706737490 selective
+		};
+		\end{axis}
+		
+		\end{tikzpicture}
+		\caption{Bandwidth used for different broadcast handling methods near steady-state}
+		\label{fig:bandwidth-required}
+	\end{center}
+\end{figure}

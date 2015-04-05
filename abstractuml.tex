@@ -1,0 +1,27 @@
+\begin{figure}[h!]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{tikzpicture} % [show background grid ]
+		
+		\umlclass[simple=true,type=class,x=-2,y=1]{Network}{}{}
+		\umlclass[simple=true,type=abstract,x=-2,y=-2]{Node}{}{}
+		\umlclass[simple=true,type=class,x=2,y=-2]{User}{}{}
+		\umlclass[simple=true,type=class,x=2,y=-4]{Packet}{}{}
+		\umlclass[simple=true,type=class,x=-2,y=-4]{StorNode}{}{}
+		
+		\umlaggreg[attr1=1|, attr2=1..*|]{Network}{Node}
+		
+		\umldep[pos=0.8, angle1=-160, angle2=-200, loopsize=1.5cm,attr1=1|,attr2=1..*|]{Node}{Node}
+		
+		\umlassoc[attr1=1|, attr2=1|]{Node}{User}
+		
+		\umlinherit{StorNode}{Node}
+		
+		\umlaggreg{Node}{Packet}
+		
+		\end{tikzpicture}
+		\end{tikzpicture}
+		\caption{Probability of a node not being selected by any node for inter-nodal communications}
+		\label{fig:internodalconnections}
+	\end{center}
+\end{figure}

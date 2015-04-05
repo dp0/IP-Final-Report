@@ -1,44 +1,19 @@
 \begin{center}
-	\begin{tikzpicture} %[show background grid ]
 	
-		\begin{class}[text width=5cm]{DataPacket}{2,0}
-			\attribute{uniqueHash : binary}
-		\end{class}
-		
-		\begin{class}[text width=5cm]{ProofOfWork}{0,-3}
-			\attribute{payloadHash : binary}
-			\attribute{proof : binary}
-			\attribute{validFrom : timestamp}
-			\attribute{validTo : timestamp}
-			\operation{verify() : boolean}
-		\end{class}
-		
-		\composition{DataPacket}{proofOfWork}{1}{ProofOfWork}
-		
-		\begin{abstractclass}[text width=5cm]{Payload}{6,-3}
-			\attribute{flag : binary}
-			\attribute{payload : binary}
-		\end{abstractclass}
-		
-		\composition{DataPacket}{payload}{1}{Payload}
-		
-		\begin{class}[text width=4cm]{BroadcastPayload}{2,-7}
-			\inherit{Payload}
-			\attribute{flag : binary = 0xbc}
-			\attribute{payload : binary}
-		\end{class}
-		
-		\begin{class}[text width=4cm]{DataPayload}{7,-7}
-			\inherit{Payload}
-			\attribute{flag : binary = 0xda}
-			\attribute{payload : binary}
-		\end{class}
-		
-		\begin{class}[text width=6cm]{IdentifableMessage}{4,-10}
-			\operation{isForIdentity(Identity) : boolean}
-		\end{class}
-		
-		\composition{BroadcastPayload}{message}{1}{IdentifableMessage}
-		
+	
+	\begin{tikzpicture} % [show background grid ]
+	
+	\umlclass[simple=true,type=class,x=0,y=1]{Packet}{}{}
+	\umlclass[simple=false,type=abstract,x=-2,y=-4]{ProofOfWork}{Algorithm\\PayloadHash\\Proof\\ValidFrom\\ValidTo}{generate()\\verify()}
+	\umlclass[simple=true,type=abstract,x=2,y=-2]{PacketPayload}{}{}
+	\umlclass[simple=true,type=class,x=0,y=-7]{BroadcastPayload}{}{}
+	\umlclass[simple=true,type=class,x=4,y=-7]{DataPayload}{}{}
+	
+	\umlcompo[attr1=1|, attr2=1|]{Packet}{ProofOfWork}
+	\umlcompo[attr1=1|, attr2=1|]{Packet}{PacketPayload}
+	
+	\umlinherit{BroadcastPayload}{PacketPayload}
+	\umlinherit{DataPayload}{PacketPayload}
+	
 	\end{tikzpicture}
 \end{center}

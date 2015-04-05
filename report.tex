@@ -1,6 +1,6 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[margin=3.5cm]{geometry}
-\usepackage[simplified]{pgf-umlcd}
+%\usepackage[simplified]{pgf-umlcd}
 \usepackage{subfiles}
 \usepackage{titling}
 \usepackage{rotating}
@@ -8,13 +8,20 @@
 \usepackage{todonotes}
 \usepackage{pgfplots}
 \usepackage{mathtools}
-\usepackage{pst-uml}
+%\usepackage{pst-uml}
 \usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{xstring}
+\usepackage{calc}
+\usepackage{pgfopts}
+\usepackage{tikz-uml}
 
 \usetikzlibrary{shapes}
 
 \setlength{\parskip}{1\baselineskip}
 \setlength{\parindent}{0pt}
+
+\hyphenpenalty=5000
 
 %opening
 \title{}
@@ -45,16 +52,16 @@
 
 \appendix
 
-\include{testplan}
+%\include{testplan}
 
-\begin{landscape}
-	\section{Management}
-\end{landscape}
-
-\begin{figure}
-	\include{umltest}
-	\caption{DataPacket Class Diagram}
-\end{figure}
+%\begin{landscape}
+%	\section{Management}
+%\end{landscape}
+%
+%\begin{figure}
+%	\include{umltest}
+%	\caption{DataPacket Class Diagram}
+%\end{figure}
 
 
 \end{document}

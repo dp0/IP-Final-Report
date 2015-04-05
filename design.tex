@@ -10,40 +10,77 @@
 
 	The general idea for the network is that the API will be able to take a message, apply some function to this and distribute it across the network to make it highly available, such that the function makes the message unreadable to anyone that is not a recipient. To retrieve a message for a particular user, all data in the network can have the inverse function applied to it to retrieve messages intended for them. This high-level abstraction is shown in \todo[inline]{Need to add sequence diagram}. In reality, this function is likely to be a form of asymmetric cryptography operating on the public key of the recipient and the inverse an operation of the recipient's private key.\todo{Move?}
 	
-	\subsection{Considered Designs}
+	\subsection{Considered Elements for Designs}
 		Several key elements of a storage network were identified and different design decisions based around these elements were considered. 
 		
-		\subsubsection*{Network Connectivity}
+		\subsubsection{Network Connectivity}
 			In order to join the network, a node must have some knowledge of where to find other nodes. This can be achieved either through the use of some central authority that holds a list of nodes, enabling anyone to acquire the knowledge to use the network, or each node can act as a part of a decentralised directory, where as long as one node can be connected to, the remaining participants of the network can be discovered.
 			
 			Neither solution is flawless: the central authority could reduce security by providing a more important class of node that could be seen as a target by an adversary, while the acquisition of the knowledge needed to connect to the initial node would have to occur out-of-band.
 			
 			Although the initial connection node may seem to be much the same as the central authority, it could be possible to have several of these initial connection nodes, and as long as they are members of the network, this should be acceptable.
 			
-			As the introduction of a central authority presents too much risk and lowers the amount of freedom compared to a distributed directory, the API should provide a mechanism to allow users of the API to set initial connection nodes in order to discover the rest of the network.		
-		\subsubsection*{Information Distribution and Delivery}
+			As the introduction of a central authority presents too much risk and lowers the amount of freedom compared to a distributed directory, the API should provide a mechanism to allow users of the API to set initial connection nodes in order to discover the rest of the network.
+			
+			Due to the nature of anonymous services, such as Tor's hidden services, from the perspective of the destination, the address, or network identifier, of the initiator of the connection is unknown. This is because under typically usage, this information is not available (where the initiator is not running an anonymous service) and also because it is not required. While data flow is bidirectional once the connection is established, this does still have the effect that once the connection is terminated, the 
+			
+			Given the nature of anonymous services, such as Tor's hidden services, the initiator of a connection is aware of the destination network identifier, although the target has no knowledge of the initiators network identifier (as the initiator is not required to have such an identifier). 
+			
+			\todo[inline]{internodal connections}
+		\subsubsection{Data Storage}
+			
+			\begin{description}
+				\item[Data as Notifications] \hfill \\
+				A single class of data packet is used, where the intended message and notification of the existence of said message are combined. This means that if a notification is successful, the data will always be available, resulting in lower delivery latency. However, as the size of some packets could be large, and the majority of this information is destined for most nodes, this is likely to be wasteful and could cause scalability issues.
+				\item[Notifications Referencing Data] \hfill \\
+				2 classes of packet are used: a data packet that is just for storing data and a notification packet that is only for notifying a node about the existence of a data packet. While all nodes still need to check all the notifications, only a subset of all nodes need to be in possession of the data packets. In addition, the notifications may also include information such as some known locations of the desired data packet. This method has the potential to reduce the availability of data packets that are not distributed well throughout the network.
+				\item[Notifications With Small Payload] \hfill \\
+				Similarly to having notifications referencing data, notifications may also hold small amounts of data on the condition that the length is comparable to that of a typical notification packet. This results in having small amounts of data having very high availability, while larger data packets not causing scalability issues.
+			\end{description}
+			
+		\todo[inline]{Have descriptions of the methods in this section and move the advantages/disadvantes out here?}
+			
+			Given that notifications with small payloads have the potential to provide maximal flexibility while also reducing the load on the network, these will be used.
+			
+		\subsubsection{Information Distribution and Delivery}
 			Distributing the information across the network must occur in order to keep the availability of information high. In order to receive a message, everyone must either check every message, or there must be some form of delegation to a third party, or third parties, that must check perform the same role.
 			
 			Systems, such as Bitmessage, take the approach that everyone can attempt to determine if a message is for them, whereas other systems, such as email, take advantage that the recipient of a message can be determined and use this place the message in a predictable location. Other networks, such as Freenet, externalise \todo{change?} the obligation of notification to out-of-band communications, meaning they do not address this issue.\todo{move?}
 			
-			As the Bitmessage network grows, it splits into ``streams''~\cite{bitmsg}, effectively creating smaller disjoint networks. Membership of a stream can be a function of some identifying element of the user, such as a public key. Although this method is promising in the promises for scalability, it has some disadvantages for the anonymity of the network. This type of optimisation is only possible where each stream has enough members such that if the stream was isolated, the property of anonymity would hold. Under the assumption that there is a partial injection from users to nodes, it is enough for the node membership under any stream for be sufficiently high. However, if this assumption cannot be made, then it may be the case that some form of deanonymization attack is taking place. The worst-case for this attack is that it may be possible to determine the public key, and therefore the identity, that a node is interested in retrieving messages for. This would occur where an adversary is able to control a significant amount of nodes such that the network splits and existing nodes organise themselves so they are members of the streams
+			As the Bitmessage network grows, it splits into ``streams''~\cite{bitmsg}, effectively creating smaller disjoint networks. Membership of a stream can be a function of some identifying element of the user, such as a public key (figure \ref{fig:stream-normal}). Although this method is promising in the promises for scalability, it has some disadvantages for the anonymity of the network. This type of optimisation is only possible where each stream has enough members such that if the stream was isolated, the property of anonymity would hold. Under the assumption that there is a partial injection from users to nodes, it is enough for the node membership under any stream for be sufficiently high. However, if this assumption cannot be made, then it may be the case that some form of deanonymization attack is taking place. The worst-case for this attack is that it may be possible to determine the public key, and therefore the identity, that a node is interested in retrieving messages for. This would occur where an adversary is able to isolate a node in a stream (figure \ref{fig:stream-malicious}), this could happen where an adversary creates a large number of nodes with similar public keys (through trial and error, or otherwise) to the target node. Although this may only reveal when information is destined for a given node, or identity, this is still undesirable.
+			
+			\todo[inline]{Worth mentioning anonymity/performance tradeoff? (Kind of implicit)\\Mention identities more?}
 			
 			\input{streams-1}
 			
-			While everyone needs to check all messages to a certain extent, this mechanism is only required to notify of a message. Hence, instead of combining the notification and data functionality in a single packet, and having everyone acquire all of these, a split can be made. This would still require everyone to acquire and check all the notification packets, but these notifications could point to a data packet elsewhere on the network, along with a collection of nodes that are known to be in possession of these data packets.
-		
-		Information Distribution and Delivery
-			Keep the system general
-			Unless a loss in anonymity, everyone must check if a message is for them
-			STREAMS!!! - mention dangers of these though...
+			While all nodes need to check all messages to a certain extent, this mechanism is only required to notify of a message. Hence, instead of combining the notification and data functionality in a single packet, and having everyone acquire all of these, a split can be made. This would still require everyone to acquire and check all the notification packets, but these notifications could point to a data packet elsewhere on the network, along with a collection of nodes that are known to be in possession of these data packets.
 			
-		Node discovery and initial connection / connection topology.\\
+		\subsubsection{Broadcast Handling}
+			Notifications will be broadcast to at least all nodes that are members of a stream, this is likely to be the bottleneck of the system. The handling of broadcasts should therefore be subject to optimisation where possible.
+			
+			\begin{description}
+				\item[Universal Polling (UP)] \hfill \\
+				Nodes query other nodes for a list of their stored broadcasts, likely in the form of a distributed hash table. The querying node then can then request any broadcast it does not have stored. If the rate of broadcasts inserted into the network is greater than the rate they expire, then the size of the query response will grow in an unsustainable way.
+				\item[Active Forwarding (AF)] \hfill \\
+				Upon receiving a broadcast, the node forwards it onto all of its connections. This does not require any list of broadcasts to be distributed, saving on some overhead. However, as the node initiating the forwarding is unaware if the nodes are in possession of the broadcast, the receiving node will be responsible for signalling that further transfer is not required, probably in the form of terminating the connection.
+				\item[Selective Polling (SP)] \hfill \\
+				When a node receives a broadcast, it also stores the time of receipt. When a node performs a poll on another node, it stores the time of polling for that node. In a similar way to UP, polling is used to gather a list of broadcasts, but a parameter specifying the last time of polling is passed too. The polled node returns the list of all broadcasts that it received after this time. This has potential anonymity implications where it may reveal the time at which a node received a broadcast. However, this can be negated by having the receiving node add a small random time to the real time of receipt.				
+			\end{description}
+			\input{broadcast-handling-scatter}
+			Simulations for each of the 3 broadcast handling methods were run for a set period of time. For the interval up to this time, nodes are stimulated, adding nodes for them to perform, such as querying another node or pushing data into the network. After the allowed simulation time, no more stimulations occur and the remaining tasks are allowed to complete. The interval from stopping stimulations to the end of the simulation is referred to as the simulation lag. More detail on the simulator can be found in \ref{simulator}. \todo{Add ref} It should be noted that time, in this context, is measured in simulation ticks, not the real time the simulation takes to complete. Small simulation lag values are what is expected to result from a sustainable system where tasks do not accumulate.
+			
+			Simulation results are not absolute, and real scalability and performance results will be dependant on real network usage. The simulations presented here, subject to minor variation in the random nature of ``simulating'' usage, have been conducted under the same usage conditions.
+			
+			Running the simulation for UP for a set time, while varying the size of the network results in the graph shown in figure \ref{fig:simulation-lag}. The point where the method fails for a simulation interval of $150\cdot10^6$ ticks, can be seen to occur at 80 nodes. For UP, the points of failure for different simulation times were plotted, as shown in figure \ref{fig:critical-point}. This downward trend indicates that the number of nodes needed to create network failure decreases the longer the network is active.
+			
+			Simulations for SP and AF were also conducted, but points of failure could not be determined.
+			
+			The simulations were run for $300\cdot10^6$ ticks, to achieve near steady-state behaviour in the network. 
+			The bandwidth used over each of the simulations was compared, as shown in figure \ref{fig:bandwidth-required}.
+			
+			SP has the potential to require the least bandwidth for broadcasts. AF may also be useful to support and may be used in some cases for non-broadcasts.
+			
 		\input{internodal-connections}
-		
-			
-		Inter-nodal connections
-		Data storage
-		Broadcast handling
 		\subsubsection{Protocol}
 			The protocol dictates how nodes interact with each other and how they should organise themselves.
 			
