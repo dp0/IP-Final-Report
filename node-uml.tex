@@ -1,0 +1,30 @@
+\section{Node UML}
+\begin{figure}[!h]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{umlseqdiag}
+		\umlobject[class=Node]{x}
+		\umlobject[class=Node,x=5]{y}
+		
+		\begin{umlcall}[op={requestNodes($addr_x$)}, return=active nodes to y]{x}{y}
+		\begin{umlcall}[op={setUnknown($addr_x$)}]{y}{y}
+		\end{umlcall}
+		\end{umlcall}
+		
+		\begin{umlfragment}[name=check, type=alt, label={online}, inner xsep=5]
+		\begin{umlcall}[op={requestInfo}, return=info, dt=8]{y}{x}
+		\end{umlcall}
+		\begin{umlcall}[op={setActive($addr_x$)}]{y}{y}
+		\end{umlcall}
+		\umlfpart[offline]
+		\begin{umlcall}[op={requestInfo}]{y}{x}
+		\end{umlcall}
+		\begin{umlcall}[op={setInactive($addr_x$)}, dt=0]{y}{y}
+		\end{umlcall}
+		\end{umlfragment}
+		%\umlnote[x=2, y=-11]{check}{Check node is active or not}
+		\end{umlseqdiag}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Node Discovery Sequence Diagram\label{fig:node-discovery-seq}}
+\end{figure}

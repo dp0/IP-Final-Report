@@ -51,4 +51,11 @@
 		\subsubsection*{Darknets}
 			\todo[inline]{Darknets}
 	\subsection{Cryptography}
+		Encryption is typically of 2 types, symmetric and asymmetric. A symmetric cipher is one where the same key is used for both encryption and decryption. If used for communications between multiple parties, this requires that the key has been distributed between all the parties, which can be problematic. Asymmetric ciphers on the other hand work on 2 keys, a public and private key.........
+		
+		Padding is a cryptographic mechanism that further adds to confidentiality. If for instance a sender were to use asymmetric encryption to send an encrypted message to 2 other parties using their respective public keys. If one of these parties were to decrypt the ciphertext with their private key and re-encrypt it with the other recipient's public key and match this to a previously intercepted communication, it would be possible to use this known-plaintext attack to deduce the communication that has occured between the sender and the other party. This can be prevented through the use of a padding scheme, where ...
+		
+		\todo[inline]{Mention padding for traffic analysis too?}
+	
+		Confidentiality by encryption is described by (RFC 4880) \todo{Add citation} through the use of a hybrid cryptosystem. This is achieved through the generation of a random symmetric key which is used to encrypt the message, possibly along with a digital signature. This random key is then encrypted with the recipient's public key. Both the symmetrically encrypted message and the asymmetrically encrypted key can then be sent to the intended recipient.
 		\todo[inline]{Crypto\\Asymmetric?\\Symmetric?\\Hybrid\\Padding Schemes\\Digital Signatures}

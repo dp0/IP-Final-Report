@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[twoside,12pt,a4paper]{article}
 \usepackage[margin=3.5cm]{geometry}
 %\usepackage[simplified]{pgf-umlcd}
 \usepackage{subfiles}
@@ -8,13 +8,17 @@
 \usepackage{todonotes}
 \usepackage{pgfplots}
 \usepackage{mathtools}
-%\usepackage{pst-uml}
 \usepackage{tikz}
 \usepackage{ifthen}
 \usepackage{xstring}
 \usepackage{calc}
 \usepackage{pgfopts}
 \usepackage{tikz-uml}
+\usepackage{pgfgantt}
+\usepackage{color, soul}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[section]{placeins}
 
 \usetikzlibrary{shapes}
 
@@ -33,17 +37,19 @@
 	\input{title}
 \end{titlingpage}
 
+\include{abstract}
 
 \tableofcontents
 
+\include{acknowledgements}
+
+\include{introduction-zero}
 
 \include{project-goals}
 \include{research-and-literature-review}
 \include{design}
 \include{implementation-and-testing}
 \include{review-and-future-work}
-
-
 
 \newpage
 \raggedright
@@ -52,16 +58,18 @@
 
 \appendix
 
+\include{api-uml}
+\include{protocol-uml}
+\include{node-uml}
 %\include{testplan}
 
-%\begin{landscape}
-%	\section{Management}
-%\end{landscape}
-%
-%\begin{figure}
-%	\include{umltest}
-%	\caption{DataPacket Class Diagram}
-%\end{figure}
+\include{gantt}
 
+\begin{figure}
+	\include{umltest}
+	\caption{DataPacket Class Diagram}
+\end{figure}
+
+%\include{gantt}
 
 \end{document}

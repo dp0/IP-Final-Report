@@ -1,22 +1,47 @@
 \section{Implementation and Testing}
 	\subsection{Implementation}
+		The implementation for the protocol has been named Stor, providing a backend to handle the protocol communications and an API which can be used by other applications wishing to use the network for anonymous communications.
 		\subsubsection*{Licensing}
 			As one of the core aims of the project is to release the code for Stor and its API, software licensing must be taken into account to not only ensure that anyone wishing to use the code can do so, but also to ensure that any third party code used is licensed to allow its use within this project.
-			
 		\subsubsection*{External Libraries}
 			\begin{description}
 				\item[net.freehaven.tor.control] BSD Licnese \\
-				Tor controller
-				\item[org.eclipse.jetty] Apache 2.0 and Eclipse Public License
-				Apache Commons
-				Gson
-				HSQLDB
-				Jetty
-				Tinfoil
-				Mimeparse
-				
+					Provides a high-level interface for communicating with Tor's control port.
+				\item[org.eclipse.jetty] Apache 2.0 and Eclipse Public License \\
+					An embedded webserver that allows delegation of request handling.
+				\item[org.apache.commons] Apache 2.0 License \\
+					Provides various collections and utility classes.
+				\item[com.google.code.mimeparse] MIT License \\
+					A utility for parsing mime types for HTTP request acceptance.
+				\item[tinfoil \textit{TorLib}] MIT License \\
+					Provides a method for performing .onion address resolution.
+				\item[com.google.gson] Apache 2.0 License \\
+					Provides serialisation/deserialisation for JSON.
+				\item[org.hsqldb] BSD License
+					An embedded SQL database that provides encrypted data persistence.
+				\item[com.google.protobuf] BSD License \\
+					A high-efficency data structure serialiser.
 			\end{description}
+		\subsubsection*{Tor Interface}
+			The interface to Tor was the first element to be implemented \todo{Move to mngmt?} due to the importance of its role in the project.
+			
+			This module communicates with a Tor instance in order to create hidden services programmatically. Bundling a Tor instance with Stor nodes was considered, but given the complications regarding keeping the instance up to date with the latest Tor releases when included in a package and potential conflicts arising from running multiple instances on a single system, it was decided that responsibility of running an instance should be deligated beyond the API for now.
+			
+			Tor provides an option to enable a control port, allowing the post-startup configuration. This control port is only bound locally and can use authentication to ensure any connections are legitimate. This interface module uses the Tor controller from \todo{Add Name} to connect the control port of a Tor instance. The module allows for password authentication with the control port using the password in the \textit{stor.cfg} configutation file. \todo[inline]{Could add information about how passwords are created? Maybe the password structure too.}
+		\subsubsection*{RESTful API}
+			Network implimentation is designed to provide a RESTful interface between nodes through the use of HTTP and JSON. With the use of these common technologies
+		\subsubsection*{Persistence Layer}
+			HSQLDB has been used to provide a layer of persistence for Stor nodes. This database allows local storage without running of a daemon and hence requires no setup from the user.
+			
+			Ideally, any data held as part of the persistence would be stored encrypted to prevent an adversary with disk access from determining any prior usage. HSQLDB provides database encryption, which uses a user-supplied password on node startup, if desired. Unfortantely, the encryption method used is somewhat weak in that patterns can be determined in the database, such as fields that contain the same values. While not ideal, HSQLDB's built-in encryption has been used to provide some protection.
+			
+			\todo[inline]{Could include details about database setup/running}
+	\subsection{Demonstration}
+		To demonstrate the API in action, 2 applications have been created. Application A, the sender, knows the identity of application B, and once the API has started the node, prompts for an input, which is fed into the API and inserted into the network for B to discover and retrieve.
+		\todo[inline]{Demo}
 	\subsection{Testing}
-		The test plan for the testing of the API can be found in appendix \ref{testplan}.
+		The test plan for the teachinesting of the API can be found in appendix \ref{testplan}.
 		\subsubsection*{Leakage of .onion Addresses}
-			-During testing, it was discovered that they leak, was fixed...
+			During testing, it was discovered that metadata was leaking through the form of hidden service DNS requests. This kind of problem is described in \cite{Thomas:2014:MLO:2665943.2665951}, where it is shown to be quite a widespread issue. For Stor, the leakage occurred because when using \textit{URLConnection}s, Java does not use any specified SOCKS proxy for address resolution, hence having the potential to leak information about which nodes are being connected to under some conditions.
+			
+			To resolve this, hidden service address resolution is handled separately to the proxy. The responsibility for this is partially handled by \textit{tinfoil.TorLib}, allowing Stor to pass a hidden service address to tor's resolver, which returns a local IP address that can then be used to make connections to the hidden service in the future without having to specify the hidden service address. This method ensures that no leakage occurs.

@@ -1,11 +1,21 @@
 \section{Review and Future Work}
-	The project has been quite successful...
-	Some things are yet to be implemented...
-		Streams (for reasons)
-		Some lower priority security mechanisms (zeroisation)
-	...
-	
-	Future work could address some of these unimplemented features
-	Could also look into addressing the issues with the network such as Sybil attacks
-	
-	An interesting future could see a large application that utilises the network made.
+
+	\subsection{Management}
+		For the first half of the project, during research, weekly meetings were complimented with reports detailing progress, problems and future targets. In the second half of the project, mainly during the implementation, meetings were generally replaced with email communication expressing progress and targets.
+		
+		Prior to extensive design work, an enumeration of the project elements was drafted and each briefly assessed and ranked for criticality, identifying tasks deemed critical for project success. Where possible, tasks assigned a high criticality index were approached first to ensure any issues with these tasks could be addressed with ample time.
+
+		\todo[inline]{Gantt charts/Risk analysis}
+
+	\subsection{Critical Evaulation}
+		The project has been quite successful in achieving the original goals: a framework for sending and receiving messages anonymously and asynchronously has been designed, implemented and released under an FOSS license. 
+		
+		As with any product making claims about security, it is neccesary for independent audit to investigate the source code. 
+		
+		Several features that have been investigated in the design were not implemented. Streams were originally indended to be supported, but due to the security considerations of having a small network initially, where there is high potential for isolation attacks, this will be left for an extension as the network grows. Zeroisation of keys was identified and investigated for the node/API implementation, but not acheived due to technical limitations both with Java and some libraries included. While some zeroisation in some circumstances may occur, no guarentee is made.
+		
+		Future work could address some of these unimplemented feaures and also further investigate some issues with trust in the network. Currently, the network is trustless, meaning that a node not following the protocol, such as not storing forwarded packets, is trusted as much as any other node, which is not ideal.
+		
+		Management of the project has been highly successful, through the use of short-term targets while taking into account longer-term goals, there has been no point where the project has fallen critically behind schedule.
+
+		In the future, some work could be done to utilise the Stor API to create an application that would benefit from anonymous asycnhronous communications.

@@ -1,0 +1,60 @@
+\section{Protocol UML}
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\umlactor[y=1]{Node}
+		\begin{umlsystem}[fill=red!10]{Internodal Communications}
+		\umlusecase[x=10,y=0,fill=blue!10,name=reqinfo]{Request Info}
+		\umlusecase[x=7,y=-1,fill=blue!10,name=reqpos]{Request Possession}
+		\umlusecase[x=4,y=-2,fill=blue!10,name=reqnodes]{Request Nodes}
+		
+		\umlusecase[x=10,y=2,fill=green!10,name=resinfo]{Respond Info}
+		\umlusecase[x=7,y=3,fill=green!10,name=respos]{Respond Possession}
+		\umlusecase[x=4,y=4,fill=green!10,name=resnodes]{Respond Nodes}
+		\end{umlsystem}
+		
+		\umlassoc{Node}{reqinfo}
+		\umlassoc{Node}{reqpos}
+		\umlassoc{Node}{reqnodes}
+		\umlassoc{Node}{resinfo}
+		\umlassoc{Node}{respos}
+		\umlassoc{Node}{resnodes}
+		
+		\umlinclude[]{resinfo}{reqinfo}
+		\umlinclude[]{resnodes}{reqnodes}
+		\umlinclude[]{respos}{reqpos}
+		
+		\end{tikzpicture}
+	\end{center}
+	\caption{Protocol's Internodal Communications Use Case Diagram\label{fig:protointernodalconusecase}}
+\end{figure}
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture} % [show background grid ]
+		
+		\umlclass[simple=false,type=class,x=0,y=0]{Node}{pseudoidentity : Identifier}{}
+		\umlclass[simple=true,type=abstract,x=7,y=0]{Packet}{}{}
+		\umlclass[simple=true,type=class,x=7,y=-2]{MetaPacket}{}{}
+		\umlclass[simple=false,type=class,x=5,y=3]{BroadcastPacket}{message : binary}{}
+		\umlclass[simple=false,type=class,x=9,y=3]{DataPacket}{message : binary}{}
+		
+		\umlaggreg[attr1=0..*|, attr2=1|]{Packet}{Node}
+		%\umlcompo[attr1=1|, attr2=1|]{Packet}{PacketPayload}
+		
+		\umlinherit{MetaPacket}{Packet}
+		\umlinherit{BroadcastPacket}{Packet}
+		\umlinherit{DataPacket}{Packet}
+		
+		\umlNarynode[x=5,y=6,name=ref,above]{Ownership Reference}
+		\umlassoc[geometry=|-,attr1=|0..*]{Node}{ref}
+		\umlassoc[geometry=|-,attr1=|0..1]{DataPacket}{ref}
+		\umlassoc[attr1=has|1]{BroadcastPacket}{ref}
+		
+		\umlaggreg[angle1=-20, angle2=-50, loopsize=4cm, attr1=|1, attr2=knows about|1..*]{Node}{Node}
+		
+		\umlaggreg[angle1=-80, angle2=-130, loopsize=2cm, attr1=|1, attr2=connected to|1..*]{Node}{Node}
+		
+		\end{tikzpicture}
+	\end{center}
+	\caption{Protocol Class Diagram}
+\end{figure}

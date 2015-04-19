@@ -1,0 +1,96 @@
+\begin{landscape}
+	
+	\section{Management}
+	\subsection{Predicted Plan}
+	
+	
+		\ganttset{%
+			calendar week text={%
+				\pgfcalendarmonthshortname{\startmonth}~\startday
+			}	
+		}
+		
+	\begin{center}
+		
+		\begin{ganttchart}[
+			vgrid={*6{draw=none}, black},
+			hgrid,
+			x unit=0.95mm,
+			y unit title=10mm,
+			y unit chart=6mm,
+			time slot format=isodate
+			]{2014-09-20}{2015-04-24}
+			\gantttitlecalendar{year, month} \\
+			\ganttbar{Project Planning}{2014-09-29}{2014-10-10} \\
+			\ganttbar{Research}{2014-10-13}{2014-10-20} \\
+			\ganttbar{Protocol Design}{2014-10-21}{2014-11-14} \\
+			\ganttbar{Implementation}{2014-10-21}{2015-01-09} \\
+			\ganttbar{Application}{2015-01-10}{2015-03-06} \\
+			\ganttbar{Review}{2015-03-07}{2015-04-24}
+		\end{ganttchart}
+	\end{center}
+		
+	\newpage
+	\subsection{Realised Plan}
+	
+	\begin{center}	
+		\begin{ganttchart}[
+			vgrid={*6{black, dotted}, black},
+			hgrid,
+			x unit=4.2mm,
+			y unit title=10mm,
+			y unit chart=6mm,
+			time slot format=isodate
+			]{2014-09-29}{2014-11-02}
+			\gantttitlecalendar{year, week} \\
+			\ganttgroup{Project Planning}{2014-09-29}{2014-10-13} \\
+			\ganttbar{\footnotesize{Establishing Aims}}{2014-10-01}{2014-10-06} \ganttnewline
+			\ganttbar{\footnotesize{Risk Assessment}}{2014-10-04}{2014-10-05} \ganttnewline
+			\ganttbar{\footnotesize{Brief Write-up}}{2014-10-06}{2014-10-08} \ganttnewline
+			\ganttmilestone{Brief Deadline}{2014-10-14} \ganttnewline
+			\ganttgroup{Research}{2014-10-13}{2014-10-19} \\
+			\ganttbar{\footnotesize{Protocol Description}}{2014-10-13}{2014-10-19} \ganttnewline
+			\ganttbar{\footnotesize{Basic Anti-SPAM}}{2014-10-17}{2014-10-17} \ganttnewline
+			\ganttbar{\footnotesize{Basic Trust}}{2014-10-18}{2014-10-19} \ganttnewline
+			\ganttgroup{Protocol Designs}{2014-10-27}{2014-11-02} \\
+			\ganttbar{\footnotesize{Detailed Description}}{2014-10-27}{2014-10-29} \ganttnewline
+			\ganttbar{\footnotesize{UML}}{2014-10-29}{2014-11-02} \ganttnewline
+		\end{ganttchart}
+		\newpage
+		\begin{ganttchart}[
+			hgrid=true,
+			vgrid={*6{draw=none}, black},
+			x unit=1.2mm,
+			y unit title=10mm,
+			y unit chart=6mm,
+			time slot format=isodate,
+			%today=2014-12-09,
+			%today label=
+			]{2014-11-03}{2015-04-19}%{2014-12-09}
+			\gantttitlecalendar{year, month} \\
+			\ganttgroup{Hidden Services}{2014-11-03}{2014-11-09} \\
+			\ganttbar{\footnotesize{Understanding Hidden Services}}{2014-11-03}{2014-11-06} \ganttnewline
+			\ganttbar{\footnotesize{Programmatic Creation}}{2014-11-06}{2014-11-09} \ganttnewline
+			\ganttbar{\footnotesize{Programmatic Creation Demo}}{2014-11-07}{2014-11-07} \ganttnewline
+			\ganttbar{\footnotesize{Steganography}}{2014-11-06}{2014-11-06} \ganttnewline
+			\ganttgroup{API Design}{2014-11-08}{2014-11-09} \\
+			\ganttbar{\footnotesize{Existing Technologies}}{2014-11-08}{2014-11-09} \ganttnewline
+			\ganttgroup{Cryptography}{2014-11-10}{2014-11-20} \\
+			\ganttbar{\footnotesize{Researching Algorithms}}{2014-11-10}{2014-11-20} \ganttnewline
+			\ganttbar{\footnotesize{Cryptography Demo}}{2014-11-10}{2014-11-20} \ganttnewline
+			\ganttgroup{Interim Finalisation}{2014-11-21}{2014-12-09} \\
+			\ganttbar{\footnotesize{API Design}}{2014-11-26}{2014-11-29} \ganttnewline
+			\ganttbar{Progress Report}{2014-11-21}{2014-12-09} \ganttnewline
+			\ganttgroup{Design Comparison}{2015-01-12}{2015-03-17} \\
+			\ganttbar{\footnotesize{Simulator}}{2015-01-12}{2015-03-17} \ganttnewline
+			\ganttgroup{Implementation}{2015-03-02}{2015-03-29} \\
+			\ganttbar{\footnotesize{Coding}}{2015-03-02}{2015-03-29} 
+			\ganttnewline
+			\ganttgroup{Testing}{2015-03-07}{2015-04-07} \\
+			\ganttbar{\footnotesize{Integration}}{2015-03-07}{2015-04-07} 
+			\ganttnewline
+			\ganttgroup{Review}{2015-04-01}{2015-04-19} \\
+			\ganttbar{\footnotesize{Final Report}}{2015-04-01}{2015-04-19} 
+		\end{ganttchart}
+	\end{center}
+\end{landscape}

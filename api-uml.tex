@@ -1,0 +1,70 @@
+\section{API UML}
+\vspace*{\fill}
+\begin{figure}[!hbt]
+	\begin{center}
+		\begin{tikzpicture} % [show background grid ]
+		
+		\umlclass[simple=false,type=class,x=0,y=1]{StorAPI}{stor : StorNode}{send(identity : PublicIdentity, message : binary)\\receive(identity : PrivateIdentity) : binary}
+		\umlclass[simple=false,type=abstract,x=0,y=-7]{Identity}{}{}
+		\umlclass[simple=false,type=abstract,x=4,y=-4]{PublicIdentity}{}{\umlvirt{encrypt(data : binary) : binary}}
+		\umlclass[simple=false,type=abstract,x=-4,y=-4]{PrivateIdentity}{}{\umlvirt{decrypt(data : binary) : binary}}
+		
+		\umluniaggreg[attr1=1|sends for, attr2=0..*|,pos1=0.2,pos2=1.0]{StorAPI}{PublicIdentity}
+		
+		\umluniaggreg[attr1=1|listens for, attr2=0..*|,pos1=0.2,pos2=0.8]{StorAPI}{PrivateIdentity}
+		
+		\umlcompo[attr1=1|, attr2=1|]{Identity}{PublicIdentity}
+		
+		\umlcompo[attr1=1|, attr2=1|]{Identity}{PrivateIdentity}
+		\end{tikzpicture}
+	\end{center}
+	\caption{API Class Diagram\label{fig:api-uml-design}}
+\end{figure}
+\vspace*{\fill}
+\begin{figure}[!hbt]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{umlseqdiag}
+		\umlobject[class=Application]{app}
+		\umlobject[class=StorAPI,x=5]{api}
+		\umlobject[class=StorNode,x=10]{node}
+		
+		\begin{umlcall}[op={send(msg,pubID)}, dt=5]{app}{api}
+		\begin{umlcall}[op={applyFunction}]{api}{api}
+		\end{umlcall}
+		
+		\begin{umlcall}[op={insert(appliedMsg)}]{api}{node}
+		\end{umlcall}
+		\end{umlcall}
+		
+		\end{umlseqdiag}
+		\end{tikzpicture}
+	\end{center}
+	\caption{API Send Sequence Diagram}
+\end{figure}
+\vspace*{\fill}
+\begin{figure}[!hbt]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{umlseqdiag}
+		\umlobject[class=Application]{app}
+		\umlobject[class=StorAPI,x=5]{api}
+		\umlobject[class=StorNode,x=10]{node}
+		\begin{umlcall}[op={receive(priID)}, dt=5]{app}{api}
+		\begin{umlfragment}[type=loop]
+		\begin{umlcall}[op={check(appliedMsg)}, dt=10]{node}{api}
+		\begin{umlcall}[op={inverse(appliedMsg)}]{api}{api}
+		\end{umlcall}
+		\end{umlcall}
+		\end{umlfragment}
+		\begin{umlfragment}[type=opt, label=for priID, inner xsep=8, fill=green!10]
+		\begin{umlcall}[type=return, op=msg]{api}{app}
+		\end{umlcall}
+		\end{umlfragment}
+		\end{umlcall}
+		\end{umlseqdiag}
+		\end{tikzpicture}
+	\end{center}
+	\caption{API Receive Sequence Diagram}
+\end{figure}
+\vspace*{\fill}
