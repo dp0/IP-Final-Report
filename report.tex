@@ -19,6 +19,10 @@
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[section]{placeins}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \usetikzlibrary{shapes}
 
@@ -43,8 +47,6 @@
 
 \include{acknowledgements}
 
-\include{introduction-zero}
-
 \include{project-goals}
 \include{research-and-literature-review}
 \include{design}
@@ -56,20 +58,33 @@
 \bibliographystyle{plain}
 \bibliography{report}
 
+\newpage
 \appendix
 
+\todo[inline]{Add section describing simulator}
+\todo[inline]{Fix UML layout issues}
+\todo[inline]{Add remaining diagrams}
+
+\section{UML}
+\subsection{API}
 \include{api-uml}
+\subsection{Protocol}
 \include{protocol-uml}
+\subsection{Node}
 \include{node-uml}
-%\include{testplan}
+\include{testplan}
 
 \include{gantt}
 
-\begin{figure}
-	\include{umltest}
-	\caption{DataPacket Class Diagram}
-\end{figure}
+\include{risk-assessment}
+
+%\begin{figure} 
+%	\include{umltest}
+%	\caption{DataPacket Class Diagram}
+%\end{figure}
 
 %\include{gantt}
+
+\include{interface-example}
 
 \end{document}

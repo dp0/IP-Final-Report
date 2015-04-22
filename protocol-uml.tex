@@ -1,5 +1,4 @@
-\section{Protocol UML}
-\begin{figure}
+\begin{figure}[!h]
 	\begin{center}
 		\begin{tikzpicture}
 		\umlactor[y=1]{Node}
@@ -28,7 +27,7 @@
 	\end{center}
 	\caption{Protocol's Internodal Communications Use Case Diagram\label{fig:protointernodalconusecase}}
 \end{figure}
-\begin{figure}
+\begin{figure}[!h]
 	\begin{center}
 		\begin{tikzpicture} % [show background grid ]
 		
@@ -57,4 +56,45 @@
 		\end{tikzpicture}
 	\end{center}
 	\caption{Protocol Class Diagram}
+\end{figure}
+
+\begin{figure}[!hbt]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{umlseqdiag}
+		\umlobject[class=Node]{a}
+		\umlobject[class=Node,x=6]{b}
+		\begin{umlcall}[op={lookupTime(b)}]{a}{a}
+			\begin{umlcall}[op={poll(time$_{a,b}$)},return={packet IDs}]{a}{b}
+				\begin{umlcall}[op={lookupPacketsSince(time$_{a,b}$)}]{b}{b}
+				\end{umlcall}
+			\end{umlcall}
+			
+			\begin{umlcall}[op={storePacketIDs()}]{a}{a}
+			\end{umlcall}
+			\begin{umlcall}[op={updateTime(b)}]{a}{a}
+			\end{umlcall}
+		\end{umlcall}
+		\begin{umlcall}[op={requestPacket(p)}, return={p}]{a}{b}
+		\end{umlcall}
+		\end{umlseqdiag}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Protocol Selective Polling Sequence Diagram}
+\end{figure}
+
+\begin{figure}[!hbt]
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{umlseqdiag}
+		\umlobject[class=Node]{a}
+		\umlobject[class=Node,x=6]{b}
+		\begin{umlcall}[op={acquirePacket()}]{a}{a}
+			\begin{umlcall}[op={forward(p)}]{a}{b}
+			\end{umlcall}
+		\end{umlcall}
+		\end{umlseqdiag}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Protocol Active Forwarding Sequence Diagram}
 \end{figure}

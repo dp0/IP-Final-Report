@@ -1,5 +1,6 @@
 \section{Research and Literature Review}
 	\subsection{Existing Systems and Technologies}
+		\todo[inline]{Finish research}
 		\subsubsection*{Bitmessage}\label{bitmessage_existing}
 			Bitmessage is a P2P communications protocol that enables parties to communicate with messages. Each party\footnote{A party may or not be a participating node.} holds at most 8 connections to other nodes in the network. Inserting a message into the network is done by encrypting the message for the recipient and forwarding it along all the connections. Nodes store messages for 2 days before they are removed. To retrieve a message, each message must be acquired and decrypted. Although Bitmessage's aim is a secure communications network, it does not address anonymity, having the undesirable affect that it is possible to tell who is using the network. Although it is possible to run Bitmessage over Tor, a node doing this is not able to accept connections~\cite{bitmsg}.
 		\subsubsection*{Freenet}\label{freenet_existing}
@@ -9,10 +10,11 @@
 		\subsubsection*{Tor}
 			Tor is an anonymity network that implements onion routing to obscure traffic patterns. The Tor network consists of relays run by volunteers. While most Tor relays only route traffic around the Tor network, some allow networks to be made to the wider Internet from within the Tor. Under typical usage conditions, onion routing will select a collection of these relays from the public list of relays, using an exit relay as the last relay if the destination is on the wider Internet. The data stream is then encrypted with successive layers of asymmetric encryption using the relay public keys so that when a relay receives some data, it can decrypt it and forward it to the next destination~\cite{dingledine2004tor}.
 			
-			A key feature of Tor are its hidden services, which are services that are hard to physically locate, meaning that it is possible to run services anonymously. Tor's hidden services provide identity verification using the 16 character onion address and as all communications stay within Tor, all traffic is encrypted. The technical specification of hidden service creation, discovery and rendezvous can be found at~\cite{tor_rend}.
-			\todo[inline]{Tor}
-		\subsubsection*{BitTorrent}
-			\todo[inline]{BitTorrent}
+			A key feature of Tor is its hidden services, which are services that are hard to physically locate, meaning that it is possible to run services anonymously. Tor's hidden services provide identity verification using the 16 character onion address and as all communications stay within Tor, all traffic is encrypted. The technical specification of hidden service creation, discovery and rendezvous is described by~\cite{tor_rend}.
+			%\todo[inline]{Tor}
+			
+		%\subsubsection*{BitTorrent}
+		%	\todo[inline]{BitTorrent}
 		\subsubsection*{Proof-of-Work}
 			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of Proof-of-Work (POW) algorithms.
 			
@@ -21,6 +23,7 @@
 			Memory-bound POWs are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound POWs, this has significant potential to address inequality of availability for those generating POWs, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.\todo{Add challenge-response and solution-verify?}
 	\subsection{Problems and Issues}
 		\subsubsection*{Lifetime of Data}
+			The availability of 
 			-What is lifetime
 			-Why it is important
 			-Freenet does not offer this
@@ -47,15 +50,15 @@
 		\subsubsection*{Steganography}
 				Although steganography is typically used for hiding information away in order to achieve a questionable level of confidentiality, steganography can also be used to conceal information in something that it was not necessarily designed to hold it. An example is the Bitcoin Message service~\cite{btcmsg} that allows users to insert messages into the Bitcoin blockchain, hence distributing a copy of the message to everyone running a Bitcoin client. This message distribution mechanism gives high availability to anyone subscribed to a given information stream. This same mechanism could be applied to the design of a storage network in an unlikely way.
 				
-				One of the potential issues with creating a fully decentralised storage network is the discovery of new nodes. This is especially true for finding the initial node to connect with. Given that all users of Tor have access to Tor directory nodes, it was hoped that hidden services descriptors could provide an information stream that could be used for steganography, however due to the nature of Tor's directory nodes, this is difficult. However, there have been reports that hidden service descriptors can be acquired through the running of a rouge relay, as described in~\cite{crawl}. This method however, is highly unreliable and requires the running of a Tor relay, which would only be eligible to be a HSDir after running for at least 25 hours, meaning very high levels of effort. Given extreme level of effort required, using Tor's hidden service descriptors for steganography has been deemed infeasible.\todo{Could add more detail}
+				One of the potential issues with creating a fully decentralised storage network is the discovery of new nodes. This is especially true for finding the initial node to connect with. Given that all users of Tor have access to Tor directory nodes, it was hoped that hidden services descriptors could provide an information stream that could be used for steganography, however due to the nature of Tor's directory nodes, this is hard. However, there have been reports that hidden service descriptors can be acquired through the running of a rouge relay, as described in~\cite{crawl}. This method, however, is highly unreliable and requires the running of a Tor relay, which would only be eligible to be a HSDir after running for at least 25 hours, meaning very high levels of effort required. Given this, using Tor's hidden service descriptors for steganography has been deemed infeasible.\todo{Could add more detail}
 		\subsubsection*{Darknets}
-			\todo[inline]{Darknets}
+			If some communicating parties can all be trusted and known to each other, it is possible to create a small network based just on these parties. Freenet has support for such networks, calling them darknets. While suitable for small groups where everyone is trusted, if the requirement for the network is public availability, where parties cannot be trusted, then darknets cannot be used.
 	\subsection{Cryptography}
-		Encryption is typically of 2 types, symmetric and asymmetric. A symmetric cipher is one where the same key is used for both encryption and decryption. If used for communications between multiple parties, this requires that the key has been distributed between all the parties, which can be problematic. Asymmetric ciphers on the other hand work on 2 keys, a public and private key.........
+		Encryption come in 2 forms, symmetric and asymmetric. A symmetric cipher is one where the same key is used for both encryption and decryption. If used for communications between multiple parties, this requires that the key has been distributed between the parties, which can be problematic. Asymmetric ciphers on the other hand work on 2 keys, a public and private key, to encrypt a message, the public key is used. Decryption is only possible with the private key. \cite{appliedcrypto}
 		
-		Padding is a cryptographic mechanism that further adds to confidentiality. If for instance a sender were to use asymmetric encryption to send an encrypted message to 2 other parties using their respective public keys. If one of these parties were to decrypt the ciphertext with their private key and re-encrypt it with the other recipient's public key and match this to a previously intercepted communication, it would be possible to use this known-plaintext attack to deduce the communication that has occured between the sender and the other party. This can be prevented through the use of a padding scheme, where ...
+		Padding is a cryptographic mechanism that further adds to confidentiality. If for instance a sender were to use asymmetric encryption to send an encrypted message to 2 other parties using their respective public keys. If one of these parties were to decrypt the ciphertext with their private key and re-encrypt it with the other recipient's public key and match this to a previously intercepted communication, it would be possible to use this known-plaintext attack to deduce the communication that has occured between the sender and the other party. This can be prevented through the use of a padding scheme, where the message is padded with some value and then encrypted. Upon decryption, the padding is then removed. Through this mechanism, it is no longer possible to determine the intended recipient of a ciphertext just from knowing the plaintext and an intercepted communication.
 		
-		\todo[inline]{Mention padding for traffic analysis too?}
+		Padding also offers protection agaianst traffic analysis, where it may be possible to determine communication content from the traffic's behaviour. This is shown in \cite{Wright:2010:USP:1880022.1880029}, where the lack of padding is shown to weaken an encrypted VoIP link.
 	
 		Confidentiality by encryption is described by (RFC 4880) \todo{Add citation} through the use of a hybrid cryptosystem. This is achieved through the generation of a random symmetric key which is used to encrypt the message, possibly along with a digital signature. This random key is then encrypted with the recipient's public key. Both the symmetrically encrypted message and the asymmetrically encrypted key can then be sent to the intended recipient.
-		\todo[inline]{Crypto\\Asymmetric?\\Symmetric?\\Hybrid\\Padding Schemes\\Digital Signatures}
+		\todo[inline]{Digital Signatures?}

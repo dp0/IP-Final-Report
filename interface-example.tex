@@ -1,0 +1,65 @@
+\begin{landscape}
+	\section{Node Implementation Examples}
+	\subsection{RESTful Interface}
+	\subsubsection*{Information Page - /}
+	\begin{lstlisting}
+{  
+	"address":"of464327gfl63fsh.onion",
+	"proofOfWorkAlgorithms":[  
+	{  
+		"name":"SHA1-LIN-64K",
+		"constant":10000,
+		"coefficient":15
+	}
+	],
+	"maxPacketSize":1048576
+}
+	\end{lstlisting}
+	\subsubsection*{Polling Page - /poll/\textit{x}}
+	\begin{lstlisting}
+{  
+	"validAt":1429557271746,
+	"broadcastHashes":[  
+	"43D860FC9356323DC0BEFDCA06D2B2C3050BC6D4",
+	"EE51C458D25652686991588BC678811F828C96BC"
+	],
+	"dataHashes":[  
+	]
+}
+	\end{lstlisting}
+	\subsubsection*{Nodes Page - /nodes}
+	\begin{lstlisting}
+{  
+	"knownActiveNodes":[  
+	"storcfvsito5init.onion"
+	]
+}
+	\end{lstlisting}
+	\subsubsection*{Request Page - /data/\textit{y}}
+	\begin{lstlisting}
+{  
+	"pow":{  
+		"name":"SHA1-LIN-64K",
+		"hash":{  
+			"hashAlgorithm":"SHA1",
+			"hash":"s+0TIV2a/tOAV9YKY+btF8xm0jc\u003d"
+		},
+		"proof":"+mUc+ABh9GU\u003d",
+		"validFrom":1429269441885,
+		"validTo":1429874241885
+	},
+	"data":{  
+		"readyData":"vImdg5fsBv..."
+	}
+}
+	\end{lstlisting}
+	
+	\subsection{\textit{stor.cfg} Configuration File}
+		\begin{lstlisting}
+# The port to connect to Tor's controller
+Port 9100
+
+# The password to auth with Tor's controller
+Password myPassword
+		\end{lstlisting}
+\end{landscape}

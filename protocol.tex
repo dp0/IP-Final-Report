@@ -1,4 +1,4 @@
-Protocol is abstract...
+\todo[inline]{The protocol is abstract...}
 
 A node has a pseudoidentifier, which is assumed to be unique. Connections are made based on this.
 
@@ -10,33 +10,37 @@ Each node is classified into one of 4 categories: active, where the node is onli
 
 All newly discovered nodes are considered unknown and tested to reclassify them as either active or inactive. Active nodes can then be used for connections, creating multiple unidirectional links to the network. Should an active node appear to be inactive by not responding appropriately, it shall be reclassified as inactive. Inactive nodes are periodically checked for signs of activity and reclassified if necessary. \todo[inline]{Flow for classification?}
 
-Information about packet possession is achieved through polling. Each node holds some mapping from nodes to timestamps, which relates to the last time that the mapped node was polled. This timestamp is sent with any polling request, therefore ensuring the list of packets the polled node lists is composed purely of new information. \todo[inline]{Polling seq diagram}
+Information about packet possession is achieved through selective polling. Each node holds some mapping from nodes to timestamps, which relates to the last time that the mapped node was polled. This timestamp is sent with any polling request, therefore ensuring the list of packets the polled node lists is composed purely of new information. \todo[inline]{Polling seq diagram}
 
-\todo{Move to elements?}While to process of inserting a packet into the network could easily be achieved through just possessing the packet and letting other nodes retrieve it, this both increases the period of distribution (decreasing immediate availability), and as the packet will originate from a single node, may allow the origin of a packet to be determined. 
+\todo{Move to elements?}While to process of inserting a packet into the network could easily be achieved through just possessing the packet and letting other nodes retrieve it, this both increases the period of distribution (decreasing immediate availability), and as the packet will originate from a single node, may allow the origin of a packet to be determined.
 
 3 packet classes are used: meta packets, for exchanging protocol information between nodes; data packets, for the representation of larger messages; and broadcast packets, to represent small messages, or a notification of the existence and location of a data packet.
 
-\begin{figure}[!h]
-	\begin{center}
-		\begin{tikzpicture} % [show background grid ]
-		
-		\umlclass[simple=false,type=class,x=0,y=1]{StorAPI}{stor : StorNode}{send(identity : PublicIdentity, message : binary)\\receive(identity : PrivateIdentity) : binary}
-		\umlclass[simple=false,type=abstract,x=0,y=-7]{Identity}{}{}
-		\umlclass[simple=false,type=abstract,x=4,y=-4]{PublicIdentity}{}{\umlvirt{encrypt(data : binary) : binary}}
-		\umlclass[simple=false,type=abstract,x=-4,y=-4]{PrivateIdentity}{}{\umlvirt{decrypt(data : binary) : binary}}
-		
-		\umluniaggreg[attr1=1|sends for, attr2=0..*|,pos1=0.2,pos2=1.0]{StorAPI}{PublicIdentity}
-		
-		\umluniaggreg[attr1=1|listens for, attr2=0..*|,pos1=0.2,pos2=0.8]{StorAPI}{PrivateIdentity}
-		
-		\umlcompo[attr1=1|, attr2=1|]{Identity}{PublicIdentity}
-		
-		\umlcompo[attr1=1|, attr2=1|]{Identity}{PrivateIdentity}
-		\end{tikzpicture}
-	\end{center}
-	\caption{API Class Diagram\label{fig:api-uml-design}}
-\end{figure}
+%\begin{figure}[!h]
+%	\begin{center}
+%		\begin{tikzpicture} % [show background grid ]
+%		
+%		\umlclass[simple=false,type=class,x=0,y=1]{StorAPI}{stor : StorNode}{send(identity : PublicIdentity, message : binary)\\receive(identity : PrivateIdentity) : binary}
+%		\umlclass[simple=false,type=abstract,x=0,y=-7]{Identity}{}{}
+%		\umlclass[simple=false,type=abstract,x=4,y=-4]{PublicIdentity}{}{\umlvirt{encrypt(data : binary) : binary}}
+%		\umlclass[simple=false,type=abstract,x=-4,y=-4]{PrivateIdentity}{}{\umlvirt{decrypt(data : binary) : binary}}
+%		
+%		\umluniaggreg[attr1=1|sends for, attr2=0..*|,pos1=0.2,pos2=1.0]{StorAPI}{PublicIdentity}
+%		
+%		\umluniaggreg[attr1=1|listens for, attr2=0..*|,pos1=0.2,pos2=0.8]{StorAPI}{PrivateIdentity}
+%		
+%		\umlcompo[attr1=1|, attr2=1|]{Identity}{PublicIdentity}
+%		
+%		\umlcompo[attr1=1|, attr2=1|]{Identity}{PrivateIdentity}
+%		\end{tikzpicture}
+%	\end{center}
+%	\caption{API Class Diagram\label{fig:api-uml-design}}
+%\end{figure}
 
 Distribution of packets is mainly achieved through polling and requesting packets that are not yet possessed, however, packet forwarding is also permitted. All broadcast packets should be acquired for checking, but the same is not true for data packets. Any valid forwarded data packet should be retained, but it is not nessesary, although allowable, to also acquire data packets through requests. In this respect, the proportion of data packets that node desires can be varied.
 
-To achieve packet insertion, the node forwards it on to its connected nodes. The node may or may not retain and advertise possession of the forwarded packet.
+To achieve packet insertion, the node forwards the packet on to its connected nodes. The inserting node may or may not retain and advertise possession of the forwarded packet.
+
+Broadcast and data packets should be accompanied with appropriate proof-of-works. Processing of a packet should only occur if the proof-of-work is valid for the packet. The validity of a proof-of-work is left for the implementation details.
+
+Additional packets containing junk data may also be inserted into the network, 
