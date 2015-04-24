@@ -1,8 +1,12 @@
-\todo[inline]{The protocol is abstract...}
+A node has a pseudoidentifier, which is assumed to be unique and not tied to any real identity.
 
-A node has a pseudoidentifier, which is assumed to be unique. Connections are made based on this.
-
-Nodes provide some method of creating and handing requests for: which active nodes they know about; what packets they are in possession of, and the class of these packets; and what proof of work algorithms and cryptographic methods are accepted (figure \ref{fig:protointernodalconusecase}).
+Nodes provide some method of creating and handing requests (figure \ref{fig:protointernodalconusecase}) for: 
+\begin{itemize}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
+	\item The active nodes they know about
+	\item The packets they are in possession of, and the class of these packets
+	\item The acceptable proof-of-work and cryptographic algorithms that are accepted
+	\item The acquisition of a packet given the packet's ID
+\end{itemize} \vspace{0.5ex}
 
 Nodes are provided with a list of initial nodes' psueudoidentifiers. Connections are make to these nodes and queried to discover the rest of the network and what methods are accepted.
 
@@ -14,33 +18,16 @@ Information about packet possession is achieved through selective polling. Each 
 
 \todo{Move to elements?}While to process of inserting a packet into the network could easily be achieved through just possessing the packet and letting other nodes retrieve it, this both increases the period of distribution (decreasing immediate availability), and as the packet will originate from a single node, may allow the origin of a packet to be determined.
 
-3 packet classes are used: meta packets, for exchanging protocol information between nodes; data packets, for the representation of larger messages; and broadcast packets, to represent small messages, or a notification of the existence and location of a data packet.
+% STATUS: Complete & Checked
+Three packet classes are used in the protocol: meta packets, for the exchange of internal information between nodes; data packets, for the representation of large messages; and broadcast packets, to represent small messages, or to act as a notification of the existence of a data packet.
 
-%\begin{figure}[!h]
-%	\begin{center}
-%		\begin{tikzpicture} % [show background grid ]
-%		
-%		\umlclass[simple=false,type=class,x=0,y=1]{StorAPI}{stor : StorNode}{send(identity : PublicIdentity, message : binary)\\receive(identity : PrivateIdentity) : binary}
-%		\umlclass[simple=false,type=abstract,x=0,y=-7]{Identity}{}{}
-%		\umlclass[simple=false,type=abstract,x=4,y=-4]{PublicIdentity}{}{\umlvirt{encrypt(data : binary) : binary}}
-%		\umlclass[simple=false,type=abstract,x=-4,y=-4]{PrivateIdentity}{}{\umlvirt{decrypt(data : binary) : binary}}
-%		
-%		\umluniaggreg[attr1=1|sends for, attr2=0..*|,pos1=0.2,pos2=1.0]{StorAPI}{PublicIdentity}
-%		
-%		\umluniaggreg[attr1=1|listens for, attr2=0..*|,pos1=0.2,pos2=0.8]{StorAPI}{PrivateIdentity}
-%		
-%		\umlcompo[attr1=1|, attr2=1|]{Identity}{PublicIdentity}
-%		
-%		\umlcompo[attr1=1|, attr2=1|]{Identity}{PrivateIdentity}
-%		\end{tikzpicture}
-%	\end{center}
-%	\caption{API Class Diagram\label{fig:api-uml-design}}
-%\end{figure}
+% STATUS: Complete & Checked
+% DOUBTS: Secondary footnote
+In order to achieve predictable availability in the network, the lifetime of packets is controlled through the use of time-sensitive proof-of-works. A packet is only considered valid if also accompanied by a valid proof-of-work and packets should only be processed or stored if they are valid. Distribution for broadcast packets is universal, but the maximum broadcast size is small\footnote{\label{fn:imp-detail}Implementation detail.} and implementations may required a more difficult proof-of-work for broadcasts. Data packets, with a larger\footnote{See \ref{fn:imp-detail}} maximum size are not universally distributed.
 
-Distribution of packets is mainly achieved through polling and requesting packets that are not yet possessed, however, packet forwarding is also permitted. All broadcast packets should be acquired for checking, but the same is not true for data packets. Any valid forwarded data packet should be retained, but it is not nessesary, although allowable, to also acquire data packets through requests. In this respect, the proportion of data packets that node desires can be varied.
+% STATUS: Complete & Checked
+Packet distribution in the network is accomplished mainly with selective polling to determining packet ownership, with requests to download new packets. Packet forwarding is also permitted, and any valid packet that is forwarded should be stored. While not a requirement of the protocol, it is allowable to use selective polling with download requests to acquire arbitrary data packets. As the main distribution mechanism for data packets is forwarding from the source node, this creates somewhat of a network-hard proof-of-work requirement for the sender, where the availability (as a function of the nodes that own the packet) increases with bandwidth used.
 
-To achieve packet insertion, the node forwards the packet on to its connected nodes. The inserting node may or may not retain and advertise possession of the forwarded packet.
-
-Broadcast and data packets should be accompanied with appropriate proof-of-works. Processing of a packet should only occur if the proof-of-work is valid for the packet. The validity of a proof-of-work is left for the implementation details.
-
-Additional packets containing junk data may also be inserted into the network, 
+% STATUS: Complete & Checked
+% DOUBTS: Could mention store-retrieve, but maybe not...
+If utilising the send-receive architecture of the network, the insertion of a valid data packet into the network will also require the insertion of at least valid broadcast packet, whose purpose will be to inform the recipient of the ID of the data packet, any associated encryption key and the identity of the nodes on which the data packet is known to exist. Multiple recipients can be achieved by inserting a broadcast packet for each recipient.

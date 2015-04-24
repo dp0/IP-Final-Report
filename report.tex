@@ -23,11 +23,23 @@
 \usepackage{listings}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[symbol]{footmisc}
 
 \usetikzlibrary{shapes}
 
-\setlength{\parskip}{1\baselineskip}
+\numberwithin{figure}{section}
+
+\setlength{\parskip}{0.6\baselineskip}
 \setlength{\parindent}{0pt}
+
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+\renewcommand{\baselinestretch}{1.0}
 
 \hyphenpenalty=5000
 
@@ -35,15 +47,26 @@
 \title{}
 \author{}
 
+\renewcommand{\thepage}{\roman{page}}
+
 \begin{document}
 
 \begin{titlingpage}
 	\input{title}
 \end{titlingpage}
 
+\newpage\null\thispagestyle{empty}\newpage
+
 \include{abstract}
 
-\tableofcontents
+%\renewcommand{\baselinestretch}{0.3}\normalsize
+%\tableofcontents
+%\renewcommand{\baselinestretch}{1.0}\normalsize
+
+%\listoffigures
+
+\newpage
+\renewcommand{\thepage}{\arabic{page}}
 
 \include{acknowledgements}
 
@@ -55,36 +78,29 @@
 
 \newpage
 \raggedright
-\bibliographystyle{plain}
-\bibliography{report}
+%\bibliographystyle{plain}
+%\bibliography{report}
 
 \newpage
-\appendix
+%\appendix
 
 \todo[inline]{Add section describing simulator}
 \todo[inline]{Fix UML layout issues}
 \todo[inline]{Add remaining diagrams}
 
-\section{UML}
-\subsection{API}
-\include{api-uml}
-\subsection{Protocol}
-\include{protocol-uml}
-\subsection{Node}
-\include{node-uml}
-\include{testplan}
-
-\include{gantt}
-
-\include{risk-assessment}
-
-%\begin{figure} 
-%	\include{umltest}
-%	\caption{DataPacket Class Diagram}
-%\end{figure}
+%\section{UML}
+%\subsection{API}
+%\include{api-uml}
+%\subsection{Protocol}
+%\include{protocol-uml}
+%\subsection{Node}
+%\include{node-uml}
+%\include{testplan}
 
 %\include{gantt}
 
-\include{interface-example}
+%\include{risk-assessment}
+
+%\include{interface-example}
 
 \end{document}

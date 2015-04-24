@@ -1,3 +1,7 @@
+\pgfplotsset{
+	scatter/use mapped color={draw=black, fill=mapped color!50},
+}
+
 \begin{figure}[h!]
 	\begin{center}
 		\begin{tikzpicture}
@@ -40,7 +44,7 @@
 		]
 		\addplot[scatter,
 		only marks,]
-		table[x=column 1,y=column 2,col sep=comma] {lin-pow.csv}; 
+		table[x=column 1,y=column 2,col sep=comma] {lin-pow3.csv}; 
 		\end{axis}
 		\end{tikzpicture}
 		\caption{Linear proof-of-work}

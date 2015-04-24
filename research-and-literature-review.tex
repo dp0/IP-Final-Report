@@ -1,6 +1,6 @@
 \section{Research and Literature Review}
 	\subsection{Existing Systems and Technologies}
-		\todo[inline]{Finish research}
+		\todo[inline]{Finish adding research}
 		\subsubsection*{Bitmessage}\label{bitmessage_existing}
 			Bitmessage is a P2P communications protocol that enables parties to communicate with messages. Each party\footnote{A party may or not be a participating node.} holds at most 8 connections to other nodes in the network. Inserting a message into the network is done by encrypting the message for the recipient and forwarding it along all the connections. Nodes store messages for 2 days before they are removed. To retrieve a message, each message must be acquired and decrypted. Although Bitmessage's aim is a secure communications network, it does not address anonymity, having the undesirable affect that it is possible to tell who is using the network. Although it is possible to run Bitmessage over Tor, a node doing this is not able to accept connections~\cite{bitmsg}.
 		\subsubsection*{Freenet}\label{freenet_existing}
@@ -16,28 +16,28 @@
 		%\subsubsection*{BitTorrent}
 		%	\todo[inline]{BitTorrent}
 		\subsubsection*{Proof-of-Work}
-			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of Proof-of-Work (POW) algorithms.
+			Achieving consensus on a traditional network may be possible where there is a link between user and available identity. This can be achieved on an anonymous network where a trusted central authority is introduced that assigns identities to users, although doing so also introduces a central point of failure. For a distributed anonymous network, consensus can also be reached through the use of proof-of-work algorithms.
 			
-			A POW is a guarantee that some resource has been used to create it. In many cases, this will in the form of a CPU-bound POW where a heavy computation is required to produce a proof that is easy to verify. Originally described in \cite{back2002hashcash}, Hashcash uses a CPU-bound POW to compute partial hash inversions. While this is common, CPU-bound POW can typically be computed quickly on Graphical Processing Units (GPUs), and even faster on Application Specific Integrated Circuits (ASICs). This has a high potential to cause a rift between those using low power devices and those able to create or afford hardware such as ASICs. This gap has been observed with Bitcoin~\cite{peck2013bitcoin}.
+			A proof-of-work is a guarantee that some resource has been used to create it. In many cases, this will in the form of a CPU-bound proof-of-work where a heavy computation is required to produce a proof that is easy to verify. Originally described in \cite{back2002hashcash}, Hashcash uses a CPU-bound proof-of-work to compute partial hash inversions. While this is common, CPU-bound proof-of-work can typically be computed quickly on Graphical Processing Units (GPUs), and even faster on Application Specific Integrated Circuits (ASICs). This has a high potential to cause a rift between those using low power devices and those able to create or afford hardware such as ASICs. This gap has been observed with Bitcoin~\cite{peck2013bitcoin}.
 			
-			Memory-bound POWs are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound POWs, this has significant potential to address inequality of availability for those generating POWs, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.\todo{Add challenge-response and solution-verify?}
+			Memory-bound proof-of-works are a potential solution to this issue, where memory access latency is the bottleneck for generation. As this latency difference between cheaper and more expensive device is less extreme than with processing difference for CPU-bound proof-of-works, this has significant potential to address inequality of availability for those generating proof-of-works, increasing accessibility to those that cannot afford expensive hardware. An implementation of such a system is described in~\cite{cuckoo}.\todo{Add challenge-response and solution-verify?}
 	\subsection{Problems and Issues}
-		\subsubsection*{Lifetime of Data}
-			The availability of 
-			-What is lifetime
-			-Why it is important
-			-Freenet does not offer this
-			-Bitmessage does (2 days), extension through repeated insertion
-		\subsubsection*{Visibility of the Network}
-			-Ideally, the existence of nodes would only be known to those participating in the network (Freenet's darknets)
-		\subsubsection*{Deanonymization Attacks}
-			In the past, anonymous services deemed to be secure have been subject to deanonymization attacks. An example of this is the take down of Silk Road, a black market hosted using Tor's hidden services. Although there is a question over how Silk Road was taken down, given that it was a centralised service, with a single party in control, it could not be considered secure, as removing just 1 server removed the entire service's availability.
+		\subsubsection*{Availability of Information}
+			The lifetime of data is one metric of availability, it defines how long some data will persist on the network before becoming unavailable. The distribution of data is also an important metric of availability, which is measured by the number of active nodes that hold some information.
 			
-			-Freenet attempts to implement anonymity...........
-			-Mention anonymity/performance trade-off
+			Some networks such as Freenet approach this by increasing the availability for popular data, having nodes as part of the request chain cache the data. In this scenario, the lifetime is strongly correlated to the distribution. Bitmessage on the other hand takes an approach where distribution is universal, but data has a expiry date, purposely decreasing availability to free network resources.
+		\subsubsection*{Visibility of the Network}
+			Networks that do not address anonymity often allow the harvesting of nodes, as node identities (such as IP addresses) are publicly visible. For an anonymous system, this is unacceptable and some form of masking is required.
+		\subsubsection*{Deanonymization Attacks}
+			In the past, anonymous services deemed to be secure have been subject to deanonymization attacks. An example of this is the take down of Silk Road, a black market hosted using Tor's hidden services. Although there is a question over how Silk Road was taken down, given that it was a centralised service, with a single party in control, it could not be considered secure, as removing just 1 server removed the entire service's availability. 
+			
+			\todo[inline]{Freenet attempts to implement anonymity...}
+			\todo[inline]{Mention anonymity/performance trade-off}
+		\subsubsection*{Trust}
+			Nodes can be malicious, they can attempt to cheat the protocol, perhaps by reporting that they are participating and sharing a resource, but in reality they could be doing nothing. Networks relying on participation have to deal with this by classifying nodes are malicious or not. This could come in the form of a simple mechanism where nodes that misbehave $n$ times are blacklisted, or it could be a more complex machine learning algorithm.
 		\subsubsection*{Sybil Attacks} \label{sybil_problems}
 			On any network, it may be possible for one user to control many identities, and therefore pretending to be many users. This can cause issues in any system attempting to use consensus based on identity. The typical remedy for this attack is to link a high-cost, resource to identities. IPv4 addresses are commonly used for this purpose, as there is a relatively small finite pool and spoofing is considered difficult. IPv6, with it's relatively large pool of addresses may not offer such protection~\cite{cholez2009evaluation}.
-		
+			
 			Due to the nature of anonymous networks, it is not possible to use identifiers, such as IP addresses, as a resource. Instead, different attack negation mechanisms must be used. A trusted central authority could assign identities which could then be used on the anonymous network, but introduced a centralised point of failure. Proof-of-works may offer a solution, where elements of a system with any form of consensus can be protected with a guarantee that a valid proof-of-work required some resource to be used. A requirement for a proof-of-work for all communications could render a large Sybil attack difficult \cite{borisov2006computational}, although this could decrease network availability to some users.
 		
 			Alternatively, the use of a trust system with cluster analysis could detect and blacklist clusters of malicious nodes
@@ -56,9 +56,9 @@
 	\subsection{Cryptography}
 		Encryption come in 2 forms, symmetric and asymmetric. A symmetric cipher is one where the same key is used for both encryption and decryption. If used for communications between multiple parties, this requires that the key has been distributed between the parties, which can be problematic. Asymmetric ciphers on the other hand work on 2 keys, a public and private key, to encrypt a message, the public key is used. Decryption is only possible with the private key. \cite{appliedcrypto}
 		
-		Padding is a cryptographic mechanism that further adds to confidentiality. If for instance a sender were to use asymmetric encryption to send an encrypted message to 2 other parties using their respective public keys. If one of these parties were to decrypt the ciphertext with their private key and re-encrypt it with the other recipient's public key and match this to a previously intercepted communication, it would be possible to use this known-plaintext attack to deduce the communication that has occured between the sender and the other party. This can be prevented through the use of a padding scheme, where the message is padded with some value and then encrypted. Upon decryption, the padding is then removed. Through this mechanism, it is no longer possible to determine the intended recipient of a ciphertext just from knowing the plaintext and an intercepted communication.
+		Padding is a cryptographic mechanism that further adds to confidentiality. If for instance a sender were to use asymmetric encryption to send an encrypted message to 2 other parties using their respective public keys. If one of these parties were to decrypt the ciphertext with their private key and re-encrypt it with the other recipient's public key and match this to a previously intercepted communication, it would be possible to use this known-plaintext attack to deduce the communication that has occurred between the sender and the other party. This can be prevented through the use of a padding scheme, where the message is padded with some value and then encrypted. Upon decryption, the padding is then removed. Through this mechanism, it is no longer possible to determine the intended recipient of a ciphertext just from knowing the plaintext and an intercepted communication.
 		
-		Padding also offers protection agaianst traffic analysis, where it may be possible to determine communication content from the traffic's behaviour. This is shown in \cite{Wright:2010:USP:1880022.1880029}, where the lack of padding is shown to weaken an encrypted VoIP link.
+		Padding also offers protection against traffic analysis, where it may be possible to determine communication content from the traffic's behaviour. This is shown in \cite{Wright:2010:USP:1880022.1880029}, where the lack of padding is shown to weaken an encrypted VoIP link.
 	
 		Confidentiality by encryption is described by (RFC 4880) \todo{Add citation} through the use of a hybrid cryptosystem. This is achieved through the generation of a random symmetric key which is used to encrypt the message, possibly along with a digital signature. This random key is then encrypted with the recipient's public key. Both the symmetrically encrypted message and the asymmetrically encrypted key can then be sent to the intended recipient.
 		\todo[inline]{Digital Signatures?}

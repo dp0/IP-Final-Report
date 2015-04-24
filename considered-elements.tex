@@ -11,8 +11,6 @@ Several key elements of a storage network were identified and different design d
 			
 			Given the nature of anonymous services, such as Tor's hidden services, the initiator of a connection is aware of the destination network identifier (or, pseudoidentity), although the target has no knowledge of the initiators psuedoidentity. This has the result that connections can be considered unidirectional, although the transfer of data is bidirectional once the connection is established. In some cases, determining the pseudoidentity of the initator is desired and so this presents an interesting challenge. The initator could tell the target their pseudoidentity, which the target could either check in some way, or trust. Alternatively, as the pseudoidentity is likely to have asymmetric key backing, a digital signature could be appended to a message, proving the pseudoidentity of the initator. 
 			
-			\todo[inline]{Speak about the actual fake pseudoidentity attack}
-			
 			\input{internodal-connections}
 			
 			The protocol dictates how nodes interact with each other and what topology to use. In some existing networks, such as Freenet, nodes organise themselves into a ``small-world topology'', where all nodes can connect to each other with a small number of hops. This is done in an attempt to keep nodes anonymous, but creates an attack vector where an adversary may be able to manipulate the topology to allow for attacks.
@@ -25,7 +23,7 @@ Several key elements of a storage network were identified and different design d
 			
 			\todo[inline]{internodal connections}
 		\subsubsection{Packet Classes}
-			\begin{description}
+			\begin{description}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
 				\item[Data as Notifications] \hfill \\
 				A single class of data packet is used, where the intended message and notification of the existence of said message are combined. This means that if a notification is successful, the data will always be available, resulting in lower delivery latency. However, as the size of some packets could be large, and the majority of this information is destined for most nodes, this is likely to be wasteful and could cause scalability issues.
 				\item[Notifications Referencing Data] \hfill \\
@@ -51,7 +49,7 @@ Several key elements of a storage network were identified and different design d
 			
 			\subsubsection{Broadcast Handling}
 			Notifications will be broadcast to at least all nodes that are members of a stream, this is likely to be the bottleneck of the system. The handling of broadcasts should therefore be subject to optimisation where possible.
-			
+
 			\begin{description}
 				\item[Universal Polling (UP)] \hfill \\
 				Nodes query other nodes for a list of their stored broadcasts, likely in the form of a distributed hash table. The querying node then can then request any broadcast it does not have stored. If the rate of broadcasts inserted into the network is greater than the rate they expire, then the size of the query response will grow in an unsustainable way.

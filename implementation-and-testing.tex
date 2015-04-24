@@ -1,17 +1,17 @@
 \section{Implementation and Testing}
 	\subsection{Node Implementation}
-		The implementation for the protocol has been named Stor, providing the node to handle the backend protocol communications and an API which serves as an interface to other applications that abstracts details of the network.
+		The implementation for the protocol has been named Stor, providing the node to handle the back end protocol communications and an API which serves as an interface to other applications that abstracts details of the network.
 	
-		The node is designed to be the component of the network that will handle implementation of the protocol. The API will also interface with the node in other to faciliate insertion and retrieval with the network.
+		The node is designed to be the component of the network that will handle implementation of the protocol. The API will also interface with the node in other to facilitate insertion and retrieval with the network.
 		
 		Stor nodes have several management modules that each control different elements of behaviour.
 		\subsubsection*{Modules}
 			\paragraph*{Connection Module}
-				A connections module is provided to handle internodal connections. Any observed node is classed as either active, inactive or unknown. Any newly observed nodes are immediately classed as unknown and will be queued for a test connection to determine their activity status. Should a successful connection be established, the node is reclassified as active, else inactive. The connections module attempts to retain a list of at least 20 active nodes at all times, which can then be used for forwarding and polling of packets. This list is periodicly renewed from all nodes known to be active, allowing other nodes to be included in the network. Any active node that cannot be connected to, or fails to respond to a request is reclassified as inacitve. Inactive nodes are also randomly tested to check for activity and reclassified appropriately.
+				A connections module is provided to handle internodal connections. Any observed node is classed as either active, inactive or unknown. Any newly observed nodes are immediately classed as unknown and will be queued for a test connection to determine their activity status. Should a successful connection be established, the node is reclassified as active, else inactive. The connections module attempts to retain a list of at least 20 active nodes at all times, which can then be used for forwarding and polling of packets. This list is periodically renewed from all nodes known to be active, allowing other nodes to be included in the network. Any active node that cannot be connected to, or fails to respond to a request is reclassified as inactive. Inactive nodes are also randomly tested to check for activity and reclassified appropriately.
 			\paragraph{Proof-of-Work Module}
 				The proof-of-work module determines which algorithm should be used when generating any proof-of-work. It does this by identifying the nodes any packet will be forwarded to upon insertion and comparing the difficulty required to its own acceptable difficulty. The most common algorithm where the difficulty is not more than $1.5\times$ any accepted difficulty is used for generation.
 			\paragraph{Insertion Module}
-				To insert some message into the network after the API has applied the relevent function, the packet class is concatenated with the applied message. This structure can then be hashed to produce a checksum that is used in the generation of the proof-of-work. A packet is then made by concatenating the proof-of-work with the applied message. This is forwarded to the connected nodes, and will be further distributed through polling and requesting.
+				To insert some message into the network after the API has applied the relevant function, the packet class is concatenated with the applied message. This structure can then be hashed to produce a checksum that is used in the generation of the proof-of-work. A packet is then made by concatenating the proof-of-work with the applied message. This is forwarded to the connected nodes, and will be further distributed through polling and requesting.
 					
 			\paragraph{Retrieval Module}
 				\todo[inline]{Explain the retrieval module}
@@ -35,23 +35,23 @@
 		\subsubsection*{Persistence}
 			HSQLDB, an embedded database, is used to provide persistence across executions. HSQLDB allows local storage without the running a daemon and hence requiring no setup from the user. Nodal activity observations will be kept in an attempt to determine which nodes are likely to be active on startup, giving quick access to the network. Records of when nodes were lasted polled are also stored in order to assist in saving resources. Any packets help also persist to increase availability.
 			
-			Ideally, any data held as part of the persistence would be stored encrypted to prevent an adversary with disk access from determining any prior usage. HSQLDB provides database encryption, which uses a user-supplied password on node startup, if desired. Unfortantely, the encryption method used is somewhat weak in that patterns can be determined in the database, such as fields that contain the same values. While not ideal, HSQLDB's built-in encryption has been used to provide some protection.
+			Ideally, any data held as part of the persistence would be stored encrypted to prevent an adversary with disk access from determining any prior usage. HSQLDB provides database encryption, which uses a user-supplied password on node startup, if desired. Unfortunately, the encryption method used is somewhat weak in that patterns can be determined in the database, such as fields that contain the same values. While not ideal, HSQLDB's built-in encryption has been used to provide some protection.
 		\subsubsection*{Hashes and Proof-of-Works}
 			Hashing algorithms have quite a history of becoming dangerously obsolete. As such, it was felt that supporting multiple hashing algorithms was a wise decision in comparison to forcing a single algorithm upon all applications. Stor currently allows all algorithms that come with the standard Java cryptography provider, although adding more in the future is easily done. 
 		
-			Like hashing algorithms, nodes also support mutliple proof-of-work algorithms, allowing for future flexibility. Each node has a collection of acceptable proof-of-work algorithms along with the relevant difficulty parameters. These difficulty parameters consist of a constant and coefficient term, allowing the difficulty to by computed by equation \ref{eq:difficulty}. 
+			Like hashing algorithms, nodes also support multiple proof-of-work algorithms, allowing for future flexibility. Each node has a collection of acceptable proof-of-work algorithms along with the relevant difficulty parameters. These difficulty parameters consist of a constant and coefficient term, allowing the difficulty to by computed by equation \ref{eq:difficulty}. 
 		
 			\begin{equation} \label{eq:difficulty}
 			\text{difficulty} = \text{constant} + \text{size} \times \text{period} \times \text{coefficient}
 			\end{equation}
 			
-			Proof-of-work algorithms, such as that described in Hashcash, use an exponential approach in order to achieve difficulty. In Hashcash, the difficulty is equal to the number of nybles at the start of the proof-of-work checksum that are zero, and hence the amount of work required as a function of the difficulty size is exponential. This exponential nature is well-suited for systems that require a change in difficulty over time, where computing power is also expected to be exponential. For Stor, this does not follow, as the difficulty needs to be more flexible, and the amount of work to produce a proof-of-work should ideally be linear with respect to difficulty. To achieve this, the difficulty, which can take the form of any natural number, is transformed to a number in some finite interval with equation \ref{eq:transdif}. The proof-of-work is valid if the relevant proof-of-work checksum is less than or equal to this transformed difficulty.
+			Proof-of-work algorithms, such as that described in Hashcash, use an exponential approach in order to achieve difficulty. In Hashcash, the difficulty is equal to the number of nibbles\footnote{A nibble is equivalent to half a byte.} at the start of the proof-of-work checksum that are zero, and hence the amount of work required as a function of the difficulty size is exponential. This exponential nature is well-suited for systems that require a change in difficulty over time, where computing power is also expected to be exponential. For Stor, this does not follow, as the difficulty needs to be more flexible, and the amount of work to produce a proof-of-work should ideally be linear with respect to difficulty. To achieve this, the difficulty, which can take the form of any natural number, is transformed to a number in some finite interval with equation \ref{eq:transdif}. The proof-of-work is valid if the relevant proof-of-work checksum is less than or equal to this transformed difficulty (equation \ref{eq:difdif}).
 		
 			\begin{equation} \label{eq:transdif}
 			\text{difficulty}' = \underbracket{M}_\text{maximum} - \frac{\text{difficulty}}{M}
 			\end{equation}
 			
-			\begin{equation}
+			\begin{equation} \label{eq:difdif}
 			\text{Hash}(checksum, period, size, nonce) \le \text{difficulty}'
 			\end{equation}
 
@@ -59,22 +59,22 @@
 		
 		
 		\subsubsection*{Security}
-			Care has been taken to prevent leakage of sensitive information, such as anything could be used to help determine the geographical location of a node. For instance, HTTP headers often contain a Date field which also contains time zone information. As part of the HTTP standard, this is always GMT, so does not require special attention. However, as timestamps are used elsewhere in the application for the packet validity periods, care has been taken to ensure that these all follow the same timezone, GMT. In addition to timezone leakage, versioning leakage has been avoided by not advertising any version number.
+			Care has been taken to prevent leakage of sensitive information, such as anything could be used to help determine the geographical location of a node. For instance, HTTP headers often contain a Date field which also contains time zone information. As part of the HTTP standard, this is always GMT, so does not require special attention. However, as timestamps are used elsewhere in the application for the packet validity periods, care has been taken to ensure that these all follow the same time zone, GMT. In addition to time zone leakage, versioning leakage has been avoided by not advertising any version number.
 			
 			While the node implementation offers some cryptographic method; no ciphers, padding or hashing algorithms have been invented or implemented. Rather, existing, trusted implementations have been used. Considerations were made for the legality around the export of a product containing cryptography and later determined that as long as all cryptography was linked externally from the application, no export license was required. As such, Java's standard cryptography provider has been used, although Bouncycastle was also considered as it offers a wider and freer range of algorithms.
 			
-			In several instances, there has been a desire to apply serialisation to polymorphism, therefore allowing the subclasses of some supertype to be serialised and deserialsed transparently. While this could have been implemented in order to achieve a more elegant stucture to the code in some areas, such as the \textit{ProofOfWork} class, polymorphic serialisation requires the construction of arbitrary objects, and if done incorrectly, presents a high potential for vulnerabilities. In fact, this is the exact reason as to why polymorphic serialisation is not supported by the GSON library by default.
+			In several instances, there has been a desire to apply serialisation to polymorphism, therefore allowing the subclasses of some supertype to be serialised and deserialsed transparently. While this could have been implemented in order to achieve a more elegant structure to the code in some areas, such as the \texttt{ProofOfWork} class, polymorphic serialisation requires the construction of arbitrary objects, and if done incorrectly, presents a high potential for vulnerabilities. In fact, this is the exact reason as to why polymorphic serialisation is not supported by the GSON library by default.
 			
 		\subsubsection*{Tor Interface}
 			The interface to Tor was the first element to be implemented due to the importance of its role in the project.
 			
-			This module communicates with a Tor instance in order to create hidden services programmatically. Bundling a Tor instance with Stor nodes was considered, but given the complications regarding keeping the instance up to date with the latest Tor releases when included in a package and potential conflicts arising from running multiple instances on a single system, it was decided that responsibility of running an instance should be deligated beyond the API for now.
+			This module communicates with a Tor instance in order to create hidden services programmatically. Bundling a Tor instance with Stor nodes was considered, but given the complications regarding keeping the instance up to date with the latest Tor releases when included in a package and potential conflicts arising from running multiple instances on a single system, it was decided that responsibility of running an instance should be delegated beyond the API for now.
 			
-			Tor provides an option to enable a control port, allowing the post-startup configuration. This control port is only bound locally and can use authentication to ensure any connections are legitimate. This interface module uses the Tor controller from \textit{net.freehaven.tor.control} to connect the control port of a Tor instance. The module allows for password authentication with the control port using the password in the \textit{stor.cfg} configutation file.
+			Tor provides an option to enable a control port, allowing the post-startup configuration. This control port is only bound locally and can use authentication to ensure any connections are legitimate. This interface module uses the Tor controller from \texttt{net.freehaven.tor.control} to connect the control port of a Tor instance. The module allows for password authentication with the control port using the password in the \textit{stor.cfg} configuration file.
 		\subsubsection*{API}
 			The API starts an instance of a Stor node and when commanded to receive a packet, will create a hook for a private identity, which is hooked into the broadcast feed, allowing it to process all broadcast packets.
 			
-			The API contains abstract classes \textit{PublicIdentity} and \textit{PrivateIdentity}, which require implementations of the function to apply and inverse. This abstraction makes it easy to provide alternative identities with custom representations and cryptography. It is hoped that through this abstraction, it may in fact be possible to directly hook an application's existing identity scheme straight into Stor's API. For basic usability, an implementation has been provided, using protocol buffers for data representation and RSA/ECB/PKCS1 for the cryptography.
+			The API contains abstract classes \texttt{PublicIdentity} and \texttt{PrivateIdentity}, which require implementations of the function to apply and inverse. This abstraction makes it easy to provide alternative identities with custom representations and cryptography. It is hoped that through this abstraction, it may in fact be possible to directly hook an application's existing identity scheme straight into Stor's API. For basic usability, an implementation has been provided, using protocol buffers for data representation and RSA/ECB/PKCS1 for the cryptography.
 			
 			The sending of fake packets to add to anonymity has not been implemented in the node, but rather, has been left as a usage detail, where in some applications their node may be
 		\subsection{Attacks and Mitigations}
@@ -85,29 +85,37 @@
 			\todo[inline]{Mention Stor is released under BSD}
 		\subsubsection*{External Libraries}
 			\begin{description}
-				\item[net.freehaven.tor.control] BSD Licnese \\
+				\item[\texttt{net.freehaven.tor.control}]\textbf{\hfill BSD License} \\
 					Provides a high-level interface for communicating with Tor's control port.
-				\item[org.eclipse.jetty] Apache 2.0 and Eclipse Public License \\
+				\item[\texttt{org.eclipse.jetty}]\textbf{\hfill Apache 2.0 and Eclipse Public License} \\
 					An embedded webserver that allows delegation of request handling.
-				\item[org.apache.commons] Apache 2.0 License \\
+				\item[\texttt{org.apache.commons}]\textbf{\hfill Apache 2.0 License} \\
 					Provides various collections and utility classes.
-				\item[com.google.code.mimeparse] MIT License \\
+				\item[\texttt{com.google.code.mimeparse}]\textbf{\hfill MIT License} \\
 					A utility for parsing mime types for HTTP request acceptance.
-				\item[tinfoil \textit{TorLib}] MIT License \\
+				\item[]\hspace*{-1ex}\textbf{\texttt{tinfoil}\footnote{\texttt{tinfoil} does not provide a fully qualified package name.} (for \texttt{TorLib}) \hfill MIT License}\\
 					Provides a method for performing .onion address resolution.
-				\item[com.google.gson] Apache 2.0 License \\
+				\item[\texttt{com.google.gson}]\textbf{\hfill Apache 2.0 License}\\
 					Provides serialisation/deserialisation for JSON.
-				\item[org.hsqldb] BSD License \\
+				\item[\texttt{org.hsqldb}]\textbf{\hfill BSD License}\\
 					An embedded SQL database that provides encrypted data persistence.
-				\item[com.google.protobuf] BSD License \\
+				\item[\texttt{com.google.protobuf}]\textbf{\hfill BSD License}\\
 					A high-efficency data structure serialiser.
 			\end{description}
 	\subsection{Demonstration}
 		To demonstrate the API in action, 2 applications have been created. Application A, the sender, knows the public identity of application B, and once the API has started the node, prompts for an input which is fed into the API and inserted into the network for B to discover and retrieve.
 		\todo[inline]{Demo}
 	\subsection{Testing}
-		The test plan for the testing of the API can be found in appendix \ref{testplan}.
+		Both unit and functionality tests were performed. Unit tests for classes have been used to test individual components to ensure they are working as expected, taking into account of the probable internal workings. Functionality testing focuses more on a black-box approach, and tests modules where multiple classes are used.
+		
+		\todo[inline]{Unit tests}
+		
+		As Stor is designed to be highly interactive through interfacing with the API, Tor and other Stor nodes, some elements are difficult to automatically test. Testing these elements was performed as part of the integration/system testing, and a tabular test plan was used (appendix \ref{testplan}).
+		
+		Difficulties with testing encryption were met when building unit tests because all encryption performed as part of Stor uses some form of padding or initialisation vectors, creating a different ciphertext on each execution. Because of this, the assumption that the cryptography provider used is working as expected is made, although tests where some known value is encrypted then decrypted are performed.
+		
+		
 		\subsubsection*{Leakage of .onion Addresses}
-			During testing, it was discovered that metadata was leaking through the form of hidden service DNS requests. This kind of problem is described in \cite{Thomas:2014:MLO:2665943.2665951}, where it is shown to be quite a widespread issue. For Stor, the leakage occurred because when using \textit{URLConnection}s, Java does not use any specified SOCKS proxy for address resolution, hence having the potential to leak information about which nodes are being connected to under some conditions.
+			During testing, it was discovered that metadata was leaking through the form of hidden service DNS requests. This kind of problem is described in \cite{Thomas:2014:MLO:2665943.2665951}, where it is shown to be quite a widespread issue. For Stor, the leakage occurred because when using \texttt{URLConnection}s, Java does not use any specified SOCKS proxy for address resolution, hence having the potential to leak information about which nodes are being connected to under some conditions.
 			
-			To resolve this, hidden service address resolution is handled separately to the proxy. The responsibility for this is partially handled by \textit{tinfoil.TorLib}, allowing Stor to pass a hidden service address to tor's resolver, which returns a local IP address that can then be used to make connections to the hidden service in the future without having to specify the hidden service address. This method ensures that no leakage occurs.
+			To resolve this, hidden service address resolution is handled separately to the proxy. The responsibility for this is partially handled by \texttt{tinfoil.TorLib}, allowing Stor to pass a hidden service address to tor's resolver, which returns a local IP address that can then be used to make connections to the hidden service in the future without having to specify the hidden service address. This method ensures that no leakage occurs.
