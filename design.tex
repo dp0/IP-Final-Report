@@ -5,10 +5,12 @@
 	\subsection{Considered Elements for Designs}
 		\input{considered-elements.tex}
 		
-	\subsection{API}
-		The primary objective of the system is to provide an API that allows for sending and receiving of messages. The node implementation and protocol are therefore designed around this objective.
+	\subsection{API} % STATUS: Complete & Checked
+		% STATUS: Complete & Checked
+		The primary objective of the system is to provide an API for a send-receive architecture, affording the sending and receipt of messages. The node implementation and abstract protocol are therefore designed around this objective.
 		
-		The API is designed to revolve around 2 functions: send and receive. Sending requires knowledge of the public identity of the sender, the message and how long it should be stored in the network. Receiving requires knowledge of a private identity, which returns a message for the given identity. Both functions are blocking, meaning that sending will block until the message is in the network and receiving will block until a message that has not been received previously is returned. Figure \ref{fig:api-uml-design} shows the general design for the API.
-	\subsection{Abstract Protocol}
+		% STATUS: Complete & Checked
+		The API is designed to revolve around two functions: send and receive. Sending requires knowledge of the public identity of the receiver; the message and how long it should be stored in the network. Receiving requires knowledge of a private identity, which returns a message for the given identity. Both functions are blocking, meaning that sending will block until the message is in the network and receiving will block until a message that has not been received previously is returned. Section \ref{uml-api} shows the general design for the API.
+	\subsection{Abstract Protocol} % STATUS: Complete
 		\input{protocol.tex}	
 			

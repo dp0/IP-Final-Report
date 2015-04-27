@@ -1,0 +1,21 @@
+\section{Project Brief}
+
+\subsection*{Problem}
+Currently, there are few networks that satisfy the property of being both anonymous and asynchronous. These networks typically have weaknesses such as a single point of failure, falling to correlation attacks that can reveal what files users are accessing, or revealing the IP address of users through node harvesting.
+
+\subsection*{Goals}
+The proposal of this project is to design and implement an anonymous P2P (peer-to-peer) data storage network addressing weaknesses of existing networks. Well-established anonymity networks such as Tor will be used to provide the backbone on which the network will run.
+The project can be broken down into 3 distinct stages.
+
+\subsubsection*{Protocol Design}
+A protocol shall be designed that allows users to communicate anonymously and asynchronously. This protocol should satisfy the set of properties:
+\begin{enumerate}
+	\item Users of the network cannot be identified
+	\item The contents of a packet can only be read by a recipient
+	\item The send of a packet of data cannot be identified by anoyone except a recipient
+	\item A recipient of a packet of data cannot be identified by anyone except the sender
+\end{enumerate}
+\subsubsection*{API Implementation}
+The API will allow a high-level interface for sending and receiving data using the network. This API will be designed in such a way that it minimises restrictions on how users can use it.
+\subsubsection*{API Application}
+An application will be made to demonstrate the API and network in action. As the scope for the application could be quite large, this leaves room for extensions should surplus time be available.

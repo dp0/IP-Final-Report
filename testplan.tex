@@ -2,17 +2,47 @@
 \begin{landscape}
 	\section{Test Plan} \label{testplan}
 	
+	\renewcommand{\arraystretch}{1.2}
+	
+	\subsection*{Unit Tests}
+	\begin{table}[h]
+		\begin{tabular}{| l | p{13cm} | l |}
+			\hline
+			Unit Test & Description & Pass/Fail \\ \hline
+			
+			\texttt{testGeneration} & Tests that a valid proof-of-work is generated so that it would be accepted. & Pass \\ \hline
+			\texttt{testFakeValidity} & A fake proof-of-work validity period is tested to ensure that it is not accepted. & Pass \\ \hline
+			\texttt{testFakeData} & A fake proof-of-work packet hash is tested to ensure that it is not accepted. & Pass \\ \hline
+			\texttt{testFakeProof} & Tests a fake proof-of-work nonce to ensure that it is not accepted. & Pass \\ \hline
+			\texttt{testCheckForMe} & Tests the method that checks for packet receipt on a packet that is for a held identity & Pass \\ \hline
+			\texttt{testCreationFromBase64} & Checks that identities can be created from a Base64 string & Pass \\ \hline
+			\texttt{testCreationFromBase64Integrity} & Tests the integrity of identities created from Base64 & Pass \\ \hline
+			\texttt{testSuccessfulDecryption} & A packet is encrypted and decrypted, checking that the message is unchanged & Pass \\ \hline
+			\texttt{testCheckNotForMe} & Tests the method that checks for packet receipt on a packet that is not for a held identity & Pass \\ \hline
+			\texttt{testBroadcastGeneration} & Tests the protobuf for the serialisation/deserialisation of broadcasts & Pass \\ \hline
+			\texttt{testPacketReadyData} & Tests the integrity of the packet payload with the packet class flag & Pass \\ \hline
+			\texttt{testDataPacket} & Tests the integrity of the packet wrapper & Pass \\ \hline
+			\texttt{testInformation} & Tests the JSON serialisation/deserialisation of nodal information & Pass \\ \hline
+			\texttt{testNodeDiscoveryInformation} & Tests the serialisation/deserialisation of the internodal communications for exchanging node discovery information & Pass \\ \hline
+			\texttt{testParams} & Tests the serialisation/deserialisation for exchanging proof-of-work parameters & Pass \\ \hline
+		\end{tabular}
+	\end{table}
+	
 	\begin{table}[h]
 		\begin{tabular}{| l | p{7cm} | p{7cm} | p{4cm} | l |}
 			\hline
 			ID & Description & Expected Result & Possible Failures & Pass/Fail \\ \hline
 			
-			0 & Node reports failure if unable to connect to a local tor control connection. & Stor throws an exception, mentioning that a connection could not be made and explaining how to fix it. & Case not checked. \newline Exception not thrown. & \\ \hline
+			0 & Node reports failure if unable to connect to a local tor control connection. & Stor throws an exception, mentioning that a connection could not be made and explaining how to fix it. & Case not checked. \newline Exception not thrown. & Pass \\ \hline
 			
-			1 & New node creates a hidden service & Stor finds no existing hidden service and creates one using the control connection. Can be tested by establishing a connection to the hidden service through Tor. & Failure to detect no existing hidden service exists. \newline Hidden service is not created. & \\ \hline
+			1 & New node creates a hidden service & Stor finds no existing hidden service and creates one using the control connection. Can be tested by establishing a connection to the hidden service through Tor. & Failure to detect no existing hidden service exists. \newline Hidden service is not created. & Pass \\ \hline
 			
-			2 & Read configuration and use parameters & Stor uses the configuration file to establish a secure control connection to the local tor instance. & Does not read config. \newline Does not use values in config. & \\ \hline
+			2 & Read configuration and use parameters & Stor uses the configuration file to establish a secure control connection to the local tor instance. & Does not read config. \newline Does not use values in config. & Pass \\ \hline
 		\end{tabular}
 	\end{table}
-	\todo[inline]{Add other entries}
 \end{landscape}
+
+\subsection*{Startup Self-Tests}
+\begin{enumerate}
+	\item Persistent database is started and checked to be working as expected by running a query on the database structure and size
+\end{enumerate}

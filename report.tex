@@ -1,5 +1,5 @@
 \documentclass[twoside,12pt,a4paper]{article}
-\usepackage[margin=3.5cm]{geometry}
+\usepackage[top=2.5cm, bottom=2.5cm, right=2.5cm, left=3.5cm]{geometry}
 %\usepackage[simplified]{pgf-umlcd}
 \usepackage{subfiles}
 \usepackage{titling}
@@ -26,11 +26,14 @@
 \usepackage{amsmath}
 \usepackage{titlesec}
 \usepackage{enumitem}
-\usepackage[symbol]{footmisc}
+\usepackage[all]{nowidow}
+%\usepackage[symbol]{footmisc}
 
 \usetikzlibrary{shapes}
 
 \numberwithin{figure}{section}
+\numberwithin{table}{section}
+\numberwithin{equation}{section}
 
 \setlength{\parskip}{0.6\baselineskip}
 \setlength{\parindent}{0pt}
@@ -47,7 +50,7 @@
 \title{}
 \author{}
 
-\renewcommand{\thepage}{\roman{page}}
+
 
 \begin{document}
 
@@ -55,18 +58,21 @@
 	\input{title}
 \end{titlingpage}
 
+
+
 \newpage\null\thispagestyle{empty}\newpage
+\pagenumbering{roman}
 
 \include{abstract}
 
-%\renewcommand{\baselinestretch}{0.3}\normalsize
-%\tableofcontents
-%\renewcommand{\baselinestretch}{1.0}\normalsize
+\renewcommand{\baselinestretch}{0.3}\normalsize
+\tableofcontents
+\renewcommand{\baselinestretch}{1.0}\normalsize
 
 %\listoffigures
 
 \newpage
-\renewcommand{\thepage}{\arabic{page}}
+\pagenumbering{arabic}
 
 \include{acknowledgements}
 
@@ -78,29 +84,38 @@
 
 \newpage
 \raggedright
-%\bibliographystyle{plain}
-%\bibliography{report}
+\bibliographystyle{plain}
+\bibliography{report}
 
 \newpage
-%\appendix
+\appendix
 
 \todo[inline]{Add section describing simulator}
 \todo[inline]{Fix UML layout issues}
 \todo[inline]{Add remaining diagrams}
 
-%\section{UML}
-%\subsection{API}
-%\include{api-uml}
-%\subsection{Protocol}
-%\include{protocol-uml}
-%\subsection{Node}
-%\include{node-uml}
-%\include{testplan}
+\section{UML}
+\subsection{API}
+\label{uml-api}
+\include{api-uml}
+\subsection{Protocol}
+\label{uml-protocol}
+\include{protocol-uml}
+\subsection{Node}
+\label{uml-node}
+\include{node-uml}
 
-%\include{gantt}
 
-%\include{risk-assessment}
+\include{testplan}
 
-%\include{interface-example}
+\include{gantt}
+
+\include{risk-assessment}
+
+\include{simulation}
+
+\include{interface-example}
+
+\include{brief}
 
 \end{document}

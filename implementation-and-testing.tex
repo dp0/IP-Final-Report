@@ -1,29 +1,30 @@
 \section{Implementation and Testing}
 	\subsection{Node Implementation}
-		The implementation for the protocol has been named Stor, providing the node to handle the back end protocol communications and an API which serves as an interface to other applications that abstracts details of the network.
-	
-		The node is designed to be the component of the network that will handle implementation of the protocol. The API will also interface with the node in other to facilitate insertion and retrieval with the network.
+		The implementation for the protocol has been named Stor, providing the node to handle the back-end protocol communications and the front-end API which serves as an interface to other applications that abstracts details of the network.
 		
 		Stor nodes have several management modules that each control different elements of behaviour.
 		\subsubsection*{Modules}
-			\paragraph*{Connection Module}
+		
+		\begin{description}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
+			\item[Connection Module] \hfill \\
 				A connections module is provided to handle internodal connections. Any observed node is classed as either active, inactive or unknown. Any newly observed nodes are immediately classed as unknown and will be queued for a test connection to determine their activity status. Should a successful connection be established, the node is reclassified as active, else inactive. The connections module attempts to retain a list of at least 20 active nodes at all times, which can then be used for forwarding and polling of packets. This list is periodically renewed from all nodes known to be active, allowing other nodes to be included in the network. Any active node that cannot be connected to, or fails to respond to a request is reclassified as inactive. Inactive nodes are also randomly tested to check for activity and reclassified appropriately.
-			\paragraph{Proof-of-Work Module}
+			\item[Proof-of-Work Module] \hfill \\
 				The proof-of-work module determines which algorithm should be used when generating any proof-of-work. It does this by identifying the nodes any packet will be forwarded to upon insertion and comparing the difficulty required to its own acceptable difficulty. The most common algorithm where the difficulty is not more than $1.5\times$ any accepted difficulty is used for generation.
-			\paragraph{Insertion Module}
+				%\todo[inline]{Make high-level POW finding diagram}
+			\item[Insertion Module] \hfill \\
 				To insert some message into the network after the API has applied the relevant function, the packet class is concatenated with the applied message. This structure can then be hashed to produce a checksum that is used in the generation of the proof-of-work. A packet is then made by concatenating the proof-of-work with the applied message. This is forwarded to the connected nodes, and will be further distributed through polling and requesting.
-					
-			\paragraph{Retrieval Module}
-				\todo[inline]{Explain the retrieval module}
-			\paragraph{Polling Module}
+			\item[Retrieval Module] \hfill \\
+				A list of packets that should be acquired is kept and the retrieval module works through these looking up any nodes that are known to be in possession of these. Once a node for a desired packet is found, the packet is downloaded from it, checked for validity, and stored.
+			\item[Polling Module] \hfill \\
 				To determine which packets are stored on other nodes, selective polling is used to enumerate packets and their classes. Each node has a table of nodes and the last time they were polled. This timestamp is used passed to the node to be polled in the URL of the HTTP request. Upon a successful poll, the table of packets and which nodes possess them is updated. The node works through the table, looking for broadcast packets that it does not have and attempts to acquire them. Data packets are only obtained through being forwarded to the node, although may also be acquired if referenced by a broadcast.
+			\end{description}
 		\subsubsection*{RESTful Interface}
 			Nodal communications support a RESTful interface using HTTP for transfers. Each node will be accessible through a GET request to the following pages:
 			\begin{description}
 				\item[/] Information Page \\ Displays supported proof-of-work algorithms and their associated difficulty.
 				\item[/poll/\textit{timestamp}] Packet Polling Page \\ Displays the packets stored and their class.
 				\item[/nodes] Nodes Page \\ Displays the nodes that are known to be active.
-				\item[/data/\textit{packetHash}] Packet Download \\ Downloads a packet.
+				\item[/data/\textit{packetHash}] Packet Download \\ Downloads the specified packet.
 			\end{description}
 			
 			POST requests to /data are allow allowable, enabling packet forwarding.
@@ -48,7 +49,8 @@
 			Proof-of-work algorithms, such as that described in Hashcash, use an exponential approach in order to achieve difficulty. In Hashcash, the difficulty is equal to the number of nibbles\footnote{A nibble is equivalent to half a byte.} at the start of the proof-of-work checksum that are zero, and hence the amount of work required as a function of the difficulty size is exponential. This exponential nature is well-suited for systems that require a change in difficulty over time, where computing power is also expected to be exponential. For Stor, this does not follow, as the difficulty needs to be more flexible, and the amount of work to produce a proof-of-work should ideally be linear with respect to difficulty. To achieve this, the difficulty, which can take the form of any natural number, is transformed to a number in some finite interval with equation \ref{eq:transdif}. The proof-of-work is valid if the relevant proof-of-work checksum is less than or equal to this transformed difficulty (equation \ref{eq:difdif}).
 		
 			\begin{equation} \label{eq:transdif}
-			\text{difficulty}' = \underbracket{M}_\text{maximum} - \frac{\text{difficulty}}{M}
+			\text{difficulty}' = M - \frac{\text{difficulty}}{M}
+			\qquad\parbox{4.0cm}{\footnotesize$\begin{aligned} M &= \text{ maximum}\end{aligned}$}
 			\end{equation}
 			
 			\begin{equation} \label{eq:difdif}
@@ -57,6 +59,60 @@
 
 			\input{pow}	
 		
+		\subsubsection*{Packets}
+			The packets are as described in the protocol, but no specific implementation of the meta packet is used.
+			
+			Both data and broadcast packets are equipped with class flags, allowing the class of a packet to be determined from a single field. In a data packet, this has been selected to be the byte \textit{0xDA}, while with broadcasts, it is \textit{0xBC}. The proof-of-work uses the hash of the class flag concatenated with the payload for validity. Each packet has a unique identifier, which serves as a hash of the entire packet, including the proof-of-work header. Figures \ref{fig:datapacket} and \ref{fig:broadcastpacket} show the high-level structures of the data and broadcast packet.
+ 			
+			\begin{figure}
+				\centering
+				\begin{tikzpicture}[auto, thick]
+				\draw [fill=gray!20, draw=black](0,0) -- (0.2,0.5) -- (5.8,0.5) -- (6,0) -- (5.8,-0.5) -- (0.2,-0.5) -- cycle;
+				\draw [fill=gray!20, draw=black](0,-0.6) -- (1,-0.6) -- (1,-1.6) -- (0,-1.6) -- cycle;
+				\draw [fill=gray!20, draw=black, decorate, decoration={random steps,segment length=3pt,amplitude=1pt}](1.1,-0.6) -- (6,-0.6) -- (6,-3) -- (0,-3) -- (0,-1.7) -- (1.1,-1.7) -- cycle;
+				\node at (3,0) {Proof-of-work};
+				\node at (0.5, -1.1) {\small{\textit{0xDA}}};
+				\node at (3.5, -1.8) {(Encrypted) Payload};
+				
+				\draw [draw=black, decorate,decoration=brace] (6.5,-0.6) -- (6.5,-3);
+				\node at (7.15, -1.8) {Hash};
+				
+				\draw [draw=black, decorate,decoration=brace] (8,0.5) -- (8,-3);
+				\node[text width=1.2cm] at (8.8, -1.25) {Unique Hash};
+				\end{tikzpicture}	
+				
+				\caption{High-level data packet structure example showing \textit{0xDA} class flag}
+				\label{fig:datapacket}
+				%\end{center}
+			\end{figure}
+			
+			\begin{figure}
+				\centering
+				\begin{tikzpicture}[auto, thick]
+				\draw [fill=gray!20, draw=black](0,0) -- (0.2,0.5) -- (5.8,0.5) -- (6,0) -- (5.8,-0.5) -- (0.2,-0.5) -- cycle;
+				\draw [fill=gray!20, draw=black](0,-0.6) -- (1,-0.6) -- (1,-1.6) -- (0,-1.6) -- cycle;
+				\draw [fill=gray!20, draw=black, decorate, decoration={random steps,segment length=3pt,amplitude=1pt}](1.1,-0.6) -- (6,-0.6) -- (6,-3) -- (0,-3) -- (0,-1.7) -- (1.1,-1.7) -- cycle;
+				\node at (3,0) {Proof-of-work};
+				\node at (0.5, -1.1) {\small{\textit{0xBC}}};
+				\node at (3.55, -1.25) {Encrypted Payload};
+				
+				\draw [fill=gray!40, draw=black](0.2,-1.9) -- (2.8,-1.9) -- (2.8,-2.8) -- (0.2,-2.8) -- cycle;
+				\node at (1.5,-2.35) {\small{\textit{0xB0ADCA57}}};
+				
+				\draw [fill=gray!40, draw=black](3,-1.9) -- (5.8,-1.9) -- (5.8,-2.8) -- (3,-2.8) -- cycle;
+				\node at (4.4,-2.35) {Message};
+				
+				\draw [draw=black, decorate,decoration=brace] (6.5,-0.6) -- (6.5,-3);
+				\node at (7.15, -1.8) {Hash};
+				
+				\draw [draw=black, decorate,decoration=brace] (8,0.5) -- (8,-3);
+				\node[text width=1.2cm] at (8.8, -1.25) {Unique Hash};
+				\end{tikzpicture}	
+				
+				\caption{High-level broadcast packet structure example showing \textit{0xBC} class flag and \textit{0xB0ADCA57} decryption magic number}
+				\label{fig:broadcastpacket}
+				%\end{center}
+			\end{figure}
 		
 		\subsubsection*{Security}
 			Care has been taken to prevent leakage of sensitive information, such as anything could be used to help determine the geographical location of a node. For instance, HTTP headers often contain a Date field which also contains time zone information. As part of the HTTP standard, this is always GMT, so does not require special attention. However, as timestamps are used elsewhere in the application for the packet validity periods, care has been taken to ensure that these all follow the same time zone, GMT. In addition to time zone leakage, versioning leakage has been avoided by not advertising any version number.
@@ -76,13 +132,12 @@
 			
 			The API contains abstract classes \texttt{PublicIdentity} and \texttt{PrivateIdentity}, which require implementations of the function to apply and inverse. This abstraction makes it easy to provide alternative identities with custom representations and cryptography. It is hoped that through this abstraction, it may in fact be possible to directly hook an application's existing identity scheme straight into Stor's API. For basic usability, an implementation has been provided, using protocol buffers for data representation and RSA/ECB/PKCS1 for the cryptography.
 			
-			The sending of fake packets to add to anonymity has not been implemented in the node, but rather, has been left as a usage detail, where in some applications their node may be
-		\subsection{Attacks and Mitigations}
-			\subsubsection*{Packet Class Poison Attack}
-			\subsubsection*{Fake Pseudoidentity Attack}
+			The sending of fake packets to add to anonymity has not been implemented in the node, but rather, has been left as a usage detail, where some applications may not desire this (due to added resource costs). Using this feature from the API is as simple as inserting some random payload with a valid proof-of-work header.
+		%\subsection{Attacks and Mitigations}
+		%	\subsubsection*{Packet Class Poison Attack}
+		%	\subsubsection*{Fake Pseudoidentity Attack}
 		\subsection{Licensing}
-			As one of the core aims of the project is to release the code for Stor and its API, software licensing must be taken into account to not only ensure that anyone wishing to use the code can do so, but also to ensure that any third party code used is licensed to allow its use within this project.
-			\todo[inline]{Mention Stor is released under BSD}
+			As one of the core aims of the project is to release the code for Stor and its API under a BSD license, software licensing must be taken into account to not only ensure that anyone wishing to use the code can do so, but also to ensure that any third party code used is licensed to allow its use within this project.
 		\subsubsection*{External Libraries}
 			\begin{description}
 				\item[\texttt{net.freehaven.tor.control}]\textbf{\hfill BSD License} \\
@@ -103,17 +158,15 @@
 					A high-efficency data structure serialiser.
 			\end{description}
 	\subsection{Demonstration}
-		To demonstrate the API in action, 2 applications have been created. Application A, the sender, knows the public identity of application B, and once the API has started the node, prompts for an input which is fed into the API and inserted into the network for B to discover and retrieve.
-		\todo[inline]{Demo}
+		To demonstrate the API in action, two applications have been created. Application A, the sender, knows the public identity of application B, and once the API has started the node, prompts for an input which is fed into the API and inserted into the network for B to discover, retrieve and display to the user.
 	\subsection{Testing}
-		Both unit and functionality tests were performed. Unit tests for classes have been used to test individual components to ensure they are working as expected, taking into account of the probable internal workings. Functionality testing focuses more on a black-box approach, and tests modules where multiple classes are used.
-		
-		\todo[inline]{Unit tests}
-		
-		As Stor is designed to be highly interactive through interfacing with the API, Tor and other Stor nodes, some elements are difficult to automatically test. Testing these elements was performed as part of the integration/system testing, and a tabular test plan was used (appendix \ref{testplan}).
-		
+		Unit tests were performed to test individual components of the system, taking into account the internal workings of these elements. These have come in the form of both fine-grained and coarse-grained tests.
+	
 		Difficulties with testing encryption were met when building unit tests because all encryption performed as part of Stor uses some form of padding or initialisation vectors, creating a different ciphertext on each execution. Because of this, the assumption that the cryptography provider used is working as expected is made, although tests where some known value is encrypted then decrypted are performed.
 		
+		As Stor is highly interactive through interfacing with the API, Tor and other Stor nodes, some elements are difficult to automatically test. Testing these elements has been achieved through functionality tests from the perspective of the ``end-user''. These tests focus on the usability and overall functionality of the system, and have been performed at distinct points through the development.
+		
+		As part of the Stor startup process, self-tests are performed to ensure that some modules are working as expected. This is true for critical elements that can not fail such as the database, webserver, Tor interface and serialiser. 
 		
 		\subsubsection*{Leakage of .onion Addresses}
 			During testing, it was discovered that metadata was leaking through the form of hidden service DNS requests. This kind of problem is described in \cite{Thomas:2014:MLO:2665943.2665951}, where it is shown to be quite a widespread issue. For Stor, the leakage occurred because when using \texttt{URLConnection}s, Java does not use any specified SOCKS proxy for address resolution, hence having the potential to leak information about which nodes are being connected to under some conditions.

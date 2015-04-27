@@ -6,11 +6,11 @@
 \definecolor{violet}{cmyk}{0.79,0.88,0,0}
 
 \tikzstyle{legend_overlay}=[rectangle, rounded corners, thin,
-top color= white,bottom color=gray!25,
+top color= white,bottom color=white, draw=black,
 minimum width=2.5cm, minimum height=0.8cm,
 black,rotate=90]
 \tikzstyle{legend_general}=[rectangle, rounded corners, thin,
-top color= gray!15,bottom color=gray!5,
+top color=white,bottom color=white, draw=black,
 minimum width=2.5cm, minimum height=0.8cm,
 black]
 \begin{figure}
@@ -21,26 +21,26 @@ black]
 	\node[legend_overlay] at (-6.5,0){\textsc{Before Split}};
 	\node[legend_overlay] at (-6.5,-5){\textsc{After Split}};
 	
-	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] at (0,0) {};
-	\node[legend_general] at (0,1.6){\textsc{Stream for PKs 0* to f*}};
+	\node[cloud, draw=black, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] (Stream-main) at (0,0) {};
+	\node[legend_general] at (0,1.6){Stream for PKs 0* to f*};
 	\foreach \name/\y/\pk in {a/0/PK: 0fa79\ldots, b/0.7/PK: c2955\ldots, c/1.4/PK: 3795a\ldots, d/2.1/PK: ee775\ldots} {
 		\node[vertex] (A-\name) at (-1.3,0.8-\y) {$\name$};	\node[right] (A-label-a) at (-1,0.8-\y) {$\pk$};
 	}
 	
-	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] at (-3,-5) {};
-	\node[legend_general] at (-3,-3.9){\textsc{Stream for PKs 0* to 7*}};
+	\node[cloud, draw=black, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] (Stream-split1) at (-3,-5) {};
+	\node[legend_general] at (-3,-3.9){{Stream for PKs 0* to 7*}};
 	\foreach \name/\y/\pk in {a/0/PK: 0fa79\ldots, c/0.7/PK: 3795a\ldots} {
 		\node[vertex] (B-\name) at (-4.3,-5-\y) {$\name$};	\node[right] (B-label-a) at (-4,-5-\y) {$\pk$};
 	}
 	
-	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] at (3,-5) {};
-	\node[legend_general] at (3,-3.9){\textsc{Stream for PKs 8* to f*}};
+	\node[cloud, draw=black, cloud puffs=16, cloud puff arc= 100, minimum width=5cm, minimum height=3.5cm, aspect=1] (Stream-split2) at (3,-5) {};
+	\node[legend_general] at (3,-3.9){{Stream for PKs 8* to f*}};
 	\foreach \name/\y/\pk in {b/0/PK: c2955\ldots, d/0.7/PK: ee775\ldots} {
 		\node[vertex] (C-\name) at (1.7,-5-\y) {$\name$};	\node[right] (C-label-a) at (2.0,-5-\y) {$\pk$};
 	}
 	
-	\draw[-latex, thick, black] (-1,-2) -- (-3.1,-3.3);
-	\draw[-latex, thick, black] (1,-2) -- (3.1,-3.3);
+	\draw[-latex, thick, black] (Stream-main) -- (Stream-split1);
+	\draw[-latex, thick, black] (Stream-main) -- (Stream-split2);
 	\end{tikzpicture}
 	\caption{Example of intended stream usage}
 	\label{fig:stream-normal}
@@ -53,12 +53,12 @@ black]
 	\begin{tikzpicture}[auto, thick]
 	\tikzstyle{vertex}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
 	
-	\node[cloud, fill=gray!20, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] at (0,0) {};
-	\node[legend_general] at (0,1.6){\textsc{Stream for PKs 0fa*}};
+	\node[cloud, fill=white, draw=black, cloud puffs=16, cloud puff arc= 100, minimum width=7cm, minimum height=4.5cm, aspect=1] at (0,0) {};
+	\node[legend_general] at (0,1.6){{Stream for PKs 0fa*}};
 	
 	\foreach \name/\y/\pk in {E/0/PK: 0fa73\ldots, F/0.7/PK: 0fa18\ldots, H/2.1/PK: 0fa9c\ldots} {
-		\node[vertex, fill=red!70!black, text=white] (A-\name) at (-1.3,0.8-\y) {$\name$};
-		\node[right, text=red!70!black] (A-label-a) at (-1,0.8-\y) {$\pk$};
+		\node[vertex, fill=black!70!white, text=white] (A-\name) at (-1.3,0.8-\y) {$\name$};
+		\node[right, text=black] (A-label-a) at (-1,0.77-\y) {$\pk$};
 	}
 	
 	\foreach \name/\y/\pk in {g/1.4/PK: 0faf2\ldots} {
@@ -70,3 +70,117 @@ black]
 	\label{fig:stream-malicious}
 	%\end{center}
 \end{figure}
+
+
+%\begin{figure}
+%	\centering
+%	\begin{tikzpicture}[auto, thick]
+%	\tikzstyle{vertex}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+%		\node[vertex] (Node-1) at (-2,0) {$1$};
+%		\node[vertex] (Node-2) at (2,1.5) {$2$};
+%		\node[vertex] (Node-3) at (2,0) {$3$};
+%		\node[vertex] (Node-4) at (2,-1.5) {$4$};
+%		
+%		\node[vertex] (Node-X) at (5,2) {$X$};
+%		\node[right] (Node-label-X) at (5.5,2) {Node X};
+%		
+%	\tikzstyle{vertex}=[circle,fill=yellow!25,draw=black,minimum size=12pt,inner sep=0pt]
+%		
+%		\node[vertex] (Packet-y) at (5,1.2) {$y$};
+%		\node[right] (Packet-label-y) at (5.5,1.2) {Packet y};
+%	
+%		\node[vertex] (Packet-1-a) at (-2.5,0.5) {$a$};
+%		\node[vertex] (Packet-1-b) at (-2.7,0) {$b$};
+%		%\node[vertex] (Packet-1-c) at (-2.5,-0.5) {$c$};
+%		\draw[thick, black] (Node-1) -- (Packet-1-a);
+%		\draw[thick, black] (Node-1) -- (Packet-1-b);
+%		%\draw[thick, black] (Node-1) -- (Packet-1-c);
+%		
+%		\node[vertex] (Packet-2-a) at (2.5,2) {$a$};
+%		\node[vertex] (Packet-2-b) at (2.7,1.5) {$b$};
+%		\draw[thick, black] (Node-2) -- (Packet-2-a);
+%		\draw[thick, black] (Node-2) -- (Packet-2-b);
+%		
+%		\node[vertex] (Packet-3-a) at (2.5,0.5) {$a$};
+%		\node[vertex] (Packet-3-c) at (2.7,0) {$c$};
+%		\draw[thick, black] (Node-3) -- (Packet-3-a);
+%		\draw[thick, black] (Node-3) -- (Packet-3-c);
+%		
+%		\node[vertex] (Packet-4-b) at (2.5,-1) {$b$};
+%		\node[vertex] (Packet-4-d) at (2.7,-1.5) {$d$};
+%		\draw[thick, black] (Node-4) -- (Packet-4-b);
+%		\draw[thick, black] (Node-4) -- (Packet-4-d);
+%		
+%		\node[text width=5cm] at (6,-1) {Node 1 selects nodes 2 and 3 to be its connections into the network};
+%		
+%		\draw[-latex, thick, dashed, black] (4.5,0.4) -- (5.4,0.4);
+%		\node[right] (Arrow) at (5.5,0.4) {Connection};
+%		
+%		\draw[-latex, thick, dashed, black] (Node-1) -- (Node-2);
+%		\draw[-latex, thick, dashed, black] (Node-1) -- (Node-3);
+%		%\node[right] (A-label-a) at (-1,0.8-\y) {$\pk$};
+%	\end{tikzpicture}	
+%	
+%	\vspace*{0.1cm} \hrulefill \vspace*{0.1cm}
+%	
+%		\begin{tikzpicture}[auto, thick]
+%		\tikzstyle{vertex}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+%		\node[vertex] (Node-1) at (-2,0) {$1$};
+%		\node[vertex] (Node-2) at (2,1.5) {$2$};
+%		\node[vertex] (Node-3) at (2,0) {$3$};
+%		\node[vertex] (Node-4) at (2,-1.5) {$4$};
+%		
+%		\tikzstyle{vertex}=[circle,fill=yellow!25,draw=black,minimum size=12pt,inner sep=0pt]
+%		
+%		\node[vertex] (Packet-1-a) at (-2.5,0.5) {$a$};
+%		\node[vertex] (Packet-1-b) at (-2.7,0) {$b$};
+%		\node[vertex] (Packet-1-N) at (-2.5,-0.5) {$N$};
+%		\draw[thick, black] (Node-1) -- (Packet-1-a);
+%		\draw[thick, black] (Node-1) -- (Packet-1-b);
+%		\draw[thick, black] (Node-1) -- (Packet-1-N);
+%		
+%		\node[vertex] (Packet-2-a) at (2.5,2) {$a$};
+%		\node[vertex] (Packet-2-b) at (2.7,1.5) {$b$};
+%		\draw[thick, black] (Node-2) -- (Packet-2-a);
+%		\draw[thick, black] (Node-2) -- (Packet-2-b);
+%		
+%		\node[vertex] (Packet-3-a) at (2.5,0.5) {$a$};
+%		\node[vertex] (Packet-3-c) at (2.7,0) {$c$};
+%		\draw[thick, black] (Node-3) -- (Packet-3-a);
+%		\draw[thick, black] (Node-3) -- (Packet-3-c);
+%		
+%		\node[vertex] (Packet-4-b) at (2.5,-1) {$b$};
+%		\node[vertex] (Packet-4-d) at (2.7,-1.5) {$d$};
+%		\draw[thick, black] (Node-4) -- (Packet-4-b);
+%		\draw[thick, black] (Node-4) -- (Packet-4-d);
+%		
+%		\node[text width=5cm] at (6,0) {Node 1 inserts a new packet N into the network by forwarding it along the connections, using Nodes 2 and 3 as rendezvous points};
+%		
+%		\draw[thick, red] (Node-1) -- (Node-2);
+%		\draw[thick, red] (Node-1) -- (Node-3);
+%		
+%		\draw[-latex, thick, dashed, black] (Node-1) -- (Node-2);
+%		\draw[-latex, thick, dashed, black] (Node-1) -- (Node-3);
+%		%\node[right] (A-label-a) at (-1,0.8-\y) {$\pk$};
+%		\end{tikzpicture}
+%	
+%	
+%	
+%	\caption{TEST}
+%	\label{fig:TEST}
+%	%\end{center}
+%\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

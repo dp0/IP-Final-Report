@@ -15,9 +15,9 @@
 					only marks,
 					point meta=explicit symbolic,
 					scatter/classes={
-						a={mark=square*,black},
+						a={mark=diamond,black},
 						b={mark=o,draw=red},
-						d={mark=triangle*,blue}
+						d={mark=triangle,blue}
 						},
 				]
 				table[meta=label] {
@@ -85,12 +85,12 @@
 			\end{axis}
 		
 		\end{tikzpicture}
-		\caption{Simulation lag for network sizes for varying simulation lengths (UAP)}
+		\caption{Simulation lag for network sizes for varying simulation lengths (UP)}
 		\label{fig:simulation-lag}
 	%\end{center}
-\end{figure}
-
-\begin{figure}
+%\end{figure}
+	\vspace*{1cm}
+%\begin{figure}
 	\centering
 		\begin{tikzpicture}
 		\begin{axis}[
@@ -114,17 +114,17 @@
 		};
 		\end{axis}
 		\end{tikzpicture}
-		\caption{Critical point of failure for simulation lengths (UAP)}
+		\caption{Critical point of failure for simulation lengths (UP)}
 		\label{fig:critical-point}
 	%\end{center}
-\end{figure}
-
-\begin{figure}
+%\end{figure}
+	\vspace*{1cm}
+%\begin{figure}
 	\centering
 		\begin{tikzpicture}
 		\begin{axis}[
 		width=0.8\linewidth,
-		height=0.5\linewidth,
+		height=0.4\linewidth,
 		xlabel=Network Size / nodes,
 		ylabel=Bandwidth Used / bytes,
 		legend entries={Universal, Selective, Forward},
@@ -136,9 +136,9 @@
 		only marks,
 		point meta=explicit symbolic,
 		scatter/classes={
-			universal={mark=square*,cyan},
+			universal={mark=diamond,brown},
 			selective={mark=o,draw=green},
-			forward={mark=triangle*,red}
+			forward={mark=triangle,magenta}
 		},
 		]
 		table[meta=label] {
@@ -189,5 +189,4 @@
 		\end{tikzpicture}
 		\caption{Bandwidth used for different broadcast handling methods near steady-state}
 		\label{fig:bandwidth-required}
-	%\end{center}
 \end{figure}

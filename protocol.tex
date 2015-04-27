@@ -1,33 +1,39 @@
-A node has a pseudoidentifier, which is assumed to be unique and not tied to any real identity.
-
-Nodes provide some method of creating and handing requests (figure \ref{fig:protointernodalconusecase}) for: 
+The network is made up of both participating nodes, and non-participating nodes. Participating nodes need to provide some method of creating and handing requests (figure \ref{fig:protointernodalconusecase}) for: 
 \begin{itemize}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
 	\item The active nodes they know about
 	\item The packets they are in possession of, and the class of these packets
 	\item The acceptable proof-of-work and cryptographic algorithms that are accepted
 	\item The acquisition of a packet given the packet's ID
-\end{itemize} \vspace{0.5ex}
+\end{itemize} \vspace{0.7ex}
 
-Nodes are provided with a list of initial nodes' psueudoidentifiers. Connections are make to these nodes and queried to discover the rest of the network and what methods are accepted.
+% STATUS: Complete & Checked
+% DOUBTS: Slightly disjoint
+Each participating node in the network has a psuedoidentifier, which is assumed to be unique, and allows connections to be made to the node, using it as an address. To facilitate the discovery of nodes in the network, nodes are initially provided with at least one psuedoidentifier of a node in the network, allowing an initial point of contact. The acquisition of the initial nodes' psuedoidentifiers occurs out-of-band.
 
-Each node is classified into one of 4 categories: active, where the node is online and responding the requests normally; inactive, where the node appears to be offline; unknown, where the node is yet to be tested for activity; undiscovered, where the node has not been discovered or referenced.
+% STATUS: Complete & Checked
+% DOUBTS: Maybe reword?
+Each node is classified into one of 4 categories: active, where the node is online and responding the requests normally; inactive, where the node appears to be offline; unknown, where the node is yet to be tested for activity; undiscovered, where the node has not been discovered or referenced. All newly discovered nodes are considered unknown and tested to reclassify them as either active or inactive. Active nodes can then be used for connections, creating multiple unidirectional links to the network. Should an active node appear to be inactive by not responding appropriately, it shall be reclassified as inactive. Inactive nodes are periodically checked for signs of activity and reclassified if necessary. \todo[inline]{Flow for classification?}
 
-All newly discovered nodes are considered unknown and tested to reclassify them as either active or inactive. Active nodes can then be used for connections, creating multiple unidirectional links to the network. Should an active node appear to be inactive by not responding appropriately, it shall be reclassified as inactive. Inactive nodes are periodically checked for signs of activity and reclassified if necessary. \todo[inline]{Flow for classification?}
+%Information about packet possession is achieved through selective polling. Each node holds some mapping from nodes to timestamps, which relates to the last time that the mapped node was polled. This timestamp is sent with any polling request, therefore ensuring the list of packets the polled node lists is composed purely of new information. \todo[inline]{Polling seq diagram}
 
-Information about packet possession is achieved through selective polling. Each node holds some mapping from nodes to timestamps, which relates to the last time that the mapped node was polled. This timestamp is sent with any polling request, therefore ensuring the list of packets the polled node lists is composed purely of new information. \todo[inline]{Polling seq diagram}
-
-\todo{Move to elements?}While to process of inserting a packet into the network could easily be achieved through just possessing the packet and letting other nodes retrieve it, this both increases the period of distribution (decreasing immediate availability), and as the packet will originate from a single node, may allow the origin of a packet to be determined.
+%\todo{Move to elements?}While to process of inserting a packet into the network could easily be achieved through just possessing the packet and letting other nodes retrieve it, this both increases the period of distribution (decreasing immediate availability), and as the packet will originate from a single node, may allow the origin of a packet to be determined.
 
 % STATUS: Complete & Checked
 Three packet classes are used in the protocol: meta packets, for the exchange of internal information between nodes; data packets, for the representation of large messages; and broadcast packets, to represent small messages, or to act as a notification of the existence of a data packet.
 
 % STATUS: Complete & Checked
 % DOUBTS: Secondary footnote
-In order to achieve predictable availability in the network, the lifetime of packets is controlled through the use of time-sensitive proof-of-works. A packet is only considered valid if also accompanied by a valid proof-of-work and packets should only be processed or stored if they are valid. Distribution for broadcast packets is universal, but the maximum broadcast size is small\footnote{\label{fn:imp-detail}Implementation detail.} and implementations may required a more difficult proof-of-work for broadcasts. Data packets, with a larger\footnote{See \ref{fn:imp-detail}} maximum size are not universally distributed.
+In order to achieve predictable availability in the network, the lifetime of packets is controlled through the use of time-sensitive proof-of-works. A packet is only considered valid if also accompanied by a valid proof-of-work and packets should only be processed or stored if they are valid. Distribution for broadcast packets is universal, but the maximum broadcast size is small\footnote{\label{fn:imp-detail}Implementation detail.} and implementations may required a more difficult proof-of-work for broadcasts. Data packets, with a larger maximum size, are not universally distributed, but rather, distributed to some subset of nodes in the network, referred to as rendezvous nodes. These rendezvous nodes can then be listed in a notification packet.
 
 % STATUS: Complete & Checked
 Packet distribution in the network is accomplished mainly with selective polling to determining packet ownership, with requests to download new packets. Packet forwarding is also permitted, and any valid packet that is forwarded should be stored. While not a requirement of the protocol, it is allowable to use selective polling with download requests to acquire arbitrary data packets. As the main distribution mechanism for data packets is forwarding from the source node, this creates somewhat of a network-hard proof-of-work requirement for the sender, where the availability (as a function of the nodes that own the packet) increases with bandwidth used.
 
 % STATUS: Complete & Checked
 % DOUBTS: Could mention store-retrieve, but maybe not...
-If utilising the send-receive architecture of the network, the insertion of a valid data packet into the network will also require the insertion of at least valid broadcast packet, whose purpose will be to inform the recipient of the ID of the data packet, any associated encryption key and the identity of the nodes on which the data packet is known to exist. Multiple recipients can be achieved by inserting a broadcast packet for each recipient.
+If utilising the send-receive architecture of the network, the insertion of a valid data packet into the network will also require the insertion of at least one valid broadcast packet, whose purpose will be to inform the recipient of the ID of the data packet, any associated encryption key and the identity of the  rendezvous nodes on which the data packet is known to exist. Multiple recipients can be achieved by inserting a broadcast packet for each recipient.
+
+% STATUS: Complete
+Packet receipt is attained through the acquisition and inspection of all valid broadcast packets. Any broadcast determined to be for the node is used for the message within the packet, or to determine the location of a referenced data packet. Referenced data packets can be acquired by downloading the packet at a rendezvous node specified in the broadcast, or a node that has been observed with selective polling to own the packet.
+
+% STATUS: Complete
+Streams allow the network to split into smaller subnetworks, with a split occurring once the condition that all streams after a potential split could still be considered anonymous, that is, if their membership still remains high. Membership of a stream is a function of some public value associated with the node. Each stream acts independently for the purpose of broadcast distribution, with cross-stream communications permitted for the insertion of a packet into the stream where the recipient is known to reside.
