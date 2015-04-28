@@ -1,10 +1,19 @@
-\documentclass[twoside,12pt,a4paper]{article}
+\documentclass[hidelinks,twoside,12pt,a4paper]{article}
 \usepackage[top=2.5cm, bottom=2.5cm, right=2.5cm, left=3.5cm]{geometry}
 %\usepackage[simplified]{pgf-umlcd}
 \usepackage{subfiles}
 \usepackage{titling}
 \usepackage{rotating}
 \usepackage{pdflscape}
+\makeatletter
+\let\LS@vtryfc\@vtryfc
+\g@addto@macro\landscape{%
+	\def\@vtryfc#1{%
+		\LS@vtryfc{#1}%
+		\LS@rot
+	}%
+}   
+\makeatother
 \usepackage{todonotes}
 \usepackage{pgfplots}
 \usepackage{mathtools}
@@ -27,7 +36,10 @@
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage[all]{nowidow}
-%\usepackage[symbol]{footmisc}
+\usepackage[bookmarks]{hyperref}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{ragged2e}
 
 \usetikzlibrary{shapes}
 
@@ -90,21 +102,10 @@
 \newpage
 \appendix
 
-\todo[inline]{Add section describing simulator}
-\todo[inline]{Fix UML layout issues}
-\todo[inline]{Add remaining diagrams}
+%\todo[inline]{Fix UML layout issues}
+%\todo[inline]{Add remaining diagrams}
 
-\section{UML}
-\subsection{API}
-\label{uml-api}
-\include{api-uml}
-\subsection{Protocol}
-\label{uml-protocol}
-\include{protocol-uml}
-\subsection{Node}
-\label{uml-node}
-\include{node-uml}
-
+\include{uml}
 
 \include{testplan}
 

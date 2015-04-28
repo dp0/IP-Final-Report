@@ -1,6 +1,6 @@
 \section{Implementation and Testing}
 	\subsection{Node Implementation}
-		The implementation for the protocol has been named Stor, providing the node to handle the back-end protocol communications and the front-end API which serves as an interface to other applications that abstracts details of the network.
+		The implementation for the protocol has been named Stor, providing the node to handle the back-end protocol communications and the front-end API which serves as an interface to other applications that abstracts details of the network. The UML for the nodes can be found in appendix \ref{uml-node}.
 		
 		Stor nodes have several management modules that each control different elements of behaviour.
 		\subsubsection*{Modules}
@@ -9,18 +9,56 @@
 			\item[Connection Module] \hfill \\
 				A connections module is provided to handle internodal connections. Any observed node is classed as either active, inactive or unknown. Any newly observed nodes are immediately classed as unknown and will be queued for a test connection to determine their activity status. Should a successful connection be established, the node is reclassified as active, else inactive. The connections module attempts to retain a list of at least 20 active nodes at all times, which can then be used for forwarding and polling of packets. This list is periodically renewed from all nodes known to be active, allowing other nodes to be included in the network. Any active node that cannot be connected to, or fails to respond to a request is reclassified as inactive. Inactive nodes are also randomly tested to check for activity and reclassified appropriately.
 			\item[Proof-of-Work Module] \hfill \\
-				The proof-of-work module determines which algorithm should be used when generating any proof-of-work. It does this by identifying the nodes any packet will be forwarded to upon insertion and comparing the difficulty required to its own acceptable difficulty. The most common algorithm where the difficulty is not more than $1.5\times$ any accepted difficulty is used for generation.
+				The proof-of-work module determines which algorithm should be used when generating any proof-of-work. It does this by identifying the nodes any packet will be forwarded to upon insertion and comparing the difficulty required to its own acceptable difficulty. The most common algorithm where the difficulty is not more than $1.5\times$ any accepted difficulty is used for generation. An example of this behaviour is shown in figure \ref{fig:powmodule}.
 				%\todo[inline]{Make high-level POW finding diagram}
 			\item[Insertion Module] \hfill \\
 				To insert some message into the network after the API has applied the relevant function, the packet class is concatenated with the applied message. This structure can then be hashed to produce a checksum that is used in the generation of the proof-of-work. A packet is then made by concatenating the proof-of-work with the applied message. This is forwarded to the connected nodes, and will be further distributed through polling and requesting.
 			\item[Retrieval Module] \hfill \\
 				A list of packets that should be acquired is kept and the retrieval module works through these looking up any nodes that are known to be in possession of these. Once a node for a desired packet is found, the packet is downloaded from it, checked for validity, and stored.
 			\item[Polling Module] \hfill \\
-				To determine which packets are stored on other nodes, selective polling is used to enumerate packets and their classes. Each node has a table of nodes and the last time they were polled. This timestamp is used passed to the node to be polled in the URL of the HTTP request. Upon a successful poll, the table of packets and which nodes possess them is updated. The node works through the table, looking for broadcast packets that it does not have and attempts to acquire them. Data packets are only obtained through being forwarded to the node, although may also be acquired if referenced by a broadcast.
+				To determine which packets are stored on other nodes, selective polling is used to enumerate packets and their classes. Each node has a table of nodes and the last time they were polled. This timestamp is passed to the node to be polled in the URL of the HTTP request. Upon a successful poll, the table of packets and which nodes possess them is updated. The node works through the table, looking for broadcast packets that it does not have and attempts to acquire them. Data packets are only obtained through being forwarded to the node, although may also be acquired if referenced by a broadcast.
 			\end{description}
+			
+			\begin{figure}[!hbpt]
+				\centering
+				\begin{tikzpicture}[auto, thick]
+				
+				\node[text width=3cm, draw=black, fill=gray!20] at (-1,3) {\textsc{Local Node}\\SHA1 (30)\\SHA256 (52)\\SHA512 (13)};
+				
+				\node[text width=5cm] at (-1,0) {Acceptance is no greater than 1.5$\times$ local difficulty.};
+				
+				\node[text width=5cm] at (-1,-2) {For simplicity, only one difficulty is shown here. In reality, there are two difficulty parameters.};
+				
+				\node[text width=3cm, draw=black, fill=gray!20!green!10!white] at (5,4) {\textsc{Node A}\\\color{green!50!black}{SHA1 (31)}\\\color{green!50!black}{SHA256 (50)}};
+				
+				\node[text width=3cm, draw=black, fill=gray!20!green!10!white] at (5,2) {\textsc{Node B}\\\color{green!50!black}{SHA1 (17)}\\\color{red!50!black}{SHA256 (153)}};
+				
+				\node[text width=3cm, draw=black, fill=gray!20!green!10!white] at (5,0) {\textsc{Node C}\\\color{red!50!black}{MD5 (10)}\\\color{green!50!black}{SHA512 (7)}};
+				
+				\node[text width=3cm, draw=black, fill=gray!20!red!10!white] at (5,-2) {\textsc{Node D}\\\color{red!50!black}{MD5 (18)}\\\color{red!50!black}{SHA1 (82)}};
+				
+				\node[text width=3cm, draw=black, fill=gray!20!green!10!white] at (5,-4) {\textsc{Node E}\\\color{green!50!black}{SHA1 (45)}\\\color{green!50!black}{SHA256 (50)}};
+				
+				\draw[thick, dashed, black] (2.5,5) -- (2.5,-5);
+				
+				\node[] (common) at (8.5,0) {Most Common};
+				
+				\draw[latex-, thick, black] (5.5,-4) .. controls (7,-4) .. (common);
+				
+				\draw[latex-, thick, black] (5.5,2) .. controls (7,2) .. (common);
+				
+				\draw[latex-, thick, black] (5.5,4) .. controls (7,4) .. (common);
+				
+				\end{tikzpicture}	
+				
+				\caption{Example showing the effect of local proof-of-work difficulty on node selection}
+				\label{fig:powmodule}
+				%\end{center}
+			\end{figure}
+			
 		\subsubsection*{RESTful Interface}
 			Nodal communications support a RESTful interface using HTTP for transfers. Each node will be accessible through a GET request to the following pages:
-			\begin{description}
+			\begin{description}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
 				\item[/] Information Page \\ Displays supported proof-of-work algorithms and their associated difficulty.
 				\item[/poll/\textit{timestamp}] Packet Polling Page \\ Displays the packets stored and their class.
 				\item[/nodes] Nodes Page \\ Displays the nodes that are known to be active.
@@ -139,7 +177,7 @@
 		\subsection{Licensing}
 			As one of the core aims of the project is to release the code for Stor and its API under a BSD license, software licensing must be taken into account to not only ensure that anyone wishing to use the code can do so, but also to ensure that any third party code used is licensed to allow its use within this project.
 		\subsubsection*{External Libraries}
-			\begin{description}
+			\begin{description}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
 				\item[\texttt{net.freehaven.tor.control}]\textbf{\hfill BSD License} \\
 					Provides a high-level interface for communicating with Tor's control port.
 				\item[\texttt{org.eclipse.jetty}]\textbf{\hfill Apache 2.0 and Eclipse Public License} \\
@@ -155,18 +193,20 @@
 				\item[\texttt{org.hsqldb}]\textbf{\hfill BSD License}\\
 					An embedded SQL database that provides encrypted data persistence.
 				\item[\texttt{com.google.protobuf}]\textbf{\hfill BSD License}\\
-					A high-efficency data structure serialiser.
+					A high-efficiency data structure serialiser.
 			\end{description}
 	\subsection{Demonstration}
 		To demonstrate the API in action, two applications have been created. Application A, the sender, knows the public identity of application B, and once the API has started the node, prompts for an input which is fed into the API and inserted into the network for B to discover, retrieve and display to the user.
+		
+		Under most conditions, the demonstration startup time is around 20 seconds, with the message latency after a completed proof-of-work is around a second. In some rare cases, Tor network conditions cause a startup time of up to 20 minutes, although this is the time to get the hidden service descriptor to propagate, and is a one-time cost, not required for additional startups.
 	\subsection{Testing}
-		Unit tests were performed to test individual components of the system, taking into account the internal workings of these elements. These have come in the form of both fine-grained and coarse-grained tests.
+		JUnit tests have been utilised to provide automated unit testing for individual components of the system, taking into account the internal workings of these elements. These have come in the form of both fine-grained and coarse-grained tests. Some of these tests are shown in appendix \ref{sec:unit-tests}.
 	
-		Difficulties with testing encryption were met when building unit tests because all encryption performed as part of Stor uses some form of padding or initialisation vectors, creating a different ciphertext on each execution. Because of this, the assumption that the cryptography provider used is working as expected is made, although tests where some known value is encrypted then decrypted are performed.
+		Difficulties with testing encryption were met when building unit tests because all encryption performed as part of Stor uses some form of padding or initialisation vectors, creating a different ciphertext on each execution. Because of this, the assumption that the cryptography provider used is working as expected is made, although tests where some known value is encrypted then decrypted are performed to test code logic.
 		
-		As Stor is highly interactive through interfacing with the API, Tor and other Stor nodes, some elements are difficult to automatically test. Testing these elements has been achieved through functionality tests from the perspective of the ``end-user''. These tests focus on the usability and overall functionality of the system, and have been performed at distinct points through the development.
+		As Stor is highly interactive through interfacing with the API, Tor and other Stor nodes, some elements are difficult to automatically test. Testing these elements has been achieved through manual usability tests. These tests focus on the usability and overall functionality of the system, and have been performed at distinct points through the development. These tests are shown in appendix \ref{sec:usability-tests}.
 		
-		As part of the Stor startup process, self-tests are performed to ensure that some modules are working as expected. This is true for critical elements that can not fail such as the database, webserver, Tor interface and serialiser. 
+		As part of the Stor startup process, self-tests are performed to ensure that some modules are working as expected. This is true for critical elements that can not under normal operation fail such as the database, webserver, Tor interface and serialiser. Perhaps the most exposed example of this is the test where a node will check that it's hidden service is publicly accessible by performing a connection to itself.
 		
 		\subsubsection*{Leakage of .onion Addresses}
 			During testing, it was discovered that metadata was leaking through the form of hidden service DNS requests. This kind of problem is described in \cite{Thomas:2014:MLO:2665943.2665951}, where it is shown to be quite a widespread issue. For Stor, the leakage occurred because when using \texttt{URLConnection}s, Java does not use any specified SOCKS proxy for address resolution, hence having the potential to leak information about which nodes are being connected to under some conditions.

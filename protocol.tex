@@ -1,3 +1,5 @@
+The UML for the protocol can be found in appendix \ref{uml-protocol}.
+
 The network is made up of both participating nodes, and non-participating nodes. Participating nodes need to provide some method of creating and handing requests (figure \ref{fig:protointernodalconusecase}) for: 
 \begin{itemize}[topsep=-5pt,itemsep=-1ex,partopsep=2ex,parsep=1.5ex]
 	\item The active nodes they know about
@@ -12,7 +14,7 @@ Each participating node in the network has a psuedoidentifier, which is assumed 
 
 % STATUS: Complete & Checked
 % DOUBTS: Maybe reword?
-Each node is classified into one of 4 categories: active, where the node is online and responding the requests normally; inactive, where the node appears to be offline; unknown, where the node is yet to be tested for activity; undiscovered, where the node has not been discovered or referenced. All newly discovered nodes are considered unknown and tested to reclassify them as either active or inactive. Active nodes can then be used for connections, creating multiple unidirectional links to the network. Should an active node appear to be inactive by not responding appropriately, it shall be reclassified as inactive. Inactive nodes are periodically checked for signs of activity and reclassified if necessary. \todo[inline]{Flow for classification?}
+Each node is classified into one of 4 categories: active, where the node is online and responding the requests normally; inactive, where the node appears to be offline; unknown, where the node is yet to be tested for activity; undiscovered, where the node has not been discovered or referenced. All newly discovered nodes are considered unknown and tested to reclassify them as either active or inactive. Active nodes can then be used for connections, creating multiple unidirectional links to the network. Should an active node appear to be inactive by not responding appropriately, it shall be reclassified as inactive. Inactive nodes are periodically checked for signs of activity and reclassified if necessary. %\todo[inline]{Flow for classification?}
 
 %Information about packet possession is achieved through selective polling. Each node holds some mapping from nodes to timestamps, which relates to the last time that the mapped node was polled. This timestamp is sent with any polling request, therefore ensuring the list of packets the polled node lists is composed purely of new information. \todo[inline]{Polling seq diagram}
 

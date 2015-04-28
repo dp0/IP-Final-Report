@@ -5,20 +5,18 @@
 		
 		Prior to extensive design work, an enumeration of the project elements was drafted and each briefly assessed and ranked for criticality, identifying tasks deemed critical for project success. Where possible, tasks assigned a high criticality index were approached first to ensure any issues with these tasks could be addressed with ample time.
 		
-		Throughout the project, multiple regular backups, including versioning have been made to off-site locations, providing several layers of redundancy. Work undertaken has been detailed in the log book in addition to weekly reports.
+		Throughout the project, multiple regular backups, including versioning with Git have been made to off-site locations, providing several layers of redundancy. Work undertaken has been detailed in the log book in addition to weekly reports.
 
-		Appendix \ref{sec:management} shows the Gantt charts detailing the predicted and realised time plans in addition to the risk assessment undertaken at the beginning of the project.
+		Appendix \ref{sec:management} shows the Gantt charts detailing the predicted and realised time plans in addition to the risk assessment undertaken at the beginning of the project. The main differences in these time plans are due to the decision to simulate different network topologies mid-project. Even with this additional task, the project's scheduling has not been problematic.
 	\subsection{Critical Evaluation}
 		The project has been quite successful in achieving the original goals: a framework for sending and receiving messages anonymously and asynchronously has been designed, implemented and released under a FOSS license. 
 		
-		As with any product making claims about security, it is necessary for independent audit to investigate the source code. 
+		As with any product making claims about security, it is necessary for independent audit to investigate the source code for any potential issues.
 		
-		Several features that have been investigated in the design were not implemented. Streams were originally intended to be supported, but due to the security considerations of having a small network initially, where there is high potential for isolation attacks, this will be left for an extension as the network grows. Zeroisation of keys was identified and investigated for the node/API implementation, but not achieved due to technical limitations both with Java and some libraries included. While some zeroisation in some circumstances may occur, no guarantee is made.
+		Several features that have been investigated in the design were not implemented. Streams were originally intended to be supported, but due to the security considerations of having a small network initially, where there is high potential for isolation attacks, this will be left for an extension as the network grows. Zeroisation of keys was identified and investigated for the node/API implementation, but not achieved due to technical limitations both with Java and some libraries included. While some zeroisation in some circumstances may occur, Stor makes no guarantees.
 		
-		Future work could address some of these unimplemented features and also further investigate some issues with trust in the network. Currently, the network is trustless, meaning that a node not following the protocol, such as not storing forwarded packets, is trusted as much as any other node, which is not ideal.
+		Future work could address some of these unimplemented features and also further investigate issues with trust in the network. Currently, the network is trustless, meaning that a node not following the protocol, such as not storing forwarded packets, is trusted as much as any other node, which is not ideal.
 		
-		Management of the project has been highly successful, through the use of short-term targets while taking into account longer-term goals, there has been no point where the project has fallen critically behind schedule.
+		Management of the project has been successful, through the use of short-term targets while taking into account longer-term goals, there has been no point where the project has fallen critically behind schedule.
 
-		In the future, some work could be done to utilise the Stor API to create an application that would benefit from anonymous asynchronous communications.
-		
-		Ultimately, while Stor in its current form requires some attention to fine-tune the behaviour, potential for usability in applications remains high.
+		In the future, some work could be done to utilise the Stor API to create an application that would benefit from anonymous asynchronous communications.	Ultimately, while Stor in its current form requires some attention to fine-tune the behaviour, potential for usability in applications remains high.

@@ -4,8 +4,9 @@
 	
 	\renewcommand{\arraystretch}{1.2}
 	
-	\subsection*{Unit Tests}
-	\begin{table}[h]
+	\subsection{Unit Tests}
+		\label{sec:unit-tests}
+	\begin{table}[!htbp]
 		\begin{tabular}{| l | p{13cm} | l |}
 			\hline
 			Unit Test & Description & Pass/Fail \\ \hline
@@ -16,33 +17,100 @@
 			\texttt{testFakeProof} & Tests a fake proof-of-work nonce to ensure that it is not accepted. & Pass \\ \hline
 			\texttt{testCheckForMe} & Tests the method that checks for packet receipt on a packet that is for a held identity & Pass \\ \hline
 			\texttt{testCreationFromBase64} & Checks that identities can be created from a Base64 string & Pass \\ \hline
-			\texttt{testCreationFromBase64Integrity} & Tests the integrity of identities created from Base64 & Pass \\ \hline
 			\texttt{testSuccessfulDecryption} & A packet is encrypted and decrypted, checking that the message is unchanged & Pass \\ \hline
 			\texttt{testCheckNotForMe} & Tests the method that checks for packet receipt on a packet that is not for a held identity & Pass \\ \hline
 			\texttt{testBroadcastGeneration} & Tests the protobuf for the serialisation/deserialisation of broadcasts & Pass \\ \hline
-			\texttt{testPacketReadyData} & Tests the integrity of the packet payload with the packet class flag & Pass \\ \hline
-			\texttt{testDataPacket} & Tests the integrity of the packet wrapper & Pass \\ \hline
 			\texttt{testInformation} & Tests the JSON serialisation/deserialisation of nodal information & Pass \\ \hline
 			\texttt{testNodeDiscoveryInformation} & Tests the serialisation/deserialisation of the internodal communications for exchanging node discovery information & Pass \\ \hline
 			\texttt{testParams} & Tests the serialisation/deserialisation for exchanging proof-of-work parameters & Pass \\ \hline
 		\end{tabular}
 	\end{table}
 	
-	\begin{table}[h]
-		\begin{tabular}{| l | p{7cm} | p{7cm} | p{4cm} | l |}
+	\newpage
+	\subsection{Manual Usability Tests}
+		\label{sec:usability-tests}
+	\begin{longtable}{| l | p{7cm} | p{7cm} | p{5cm} | l |}
 			\hline
 			ID & Description & Expected Result & Possible Failures & Pass/Fail \\ \hline
-			
+			\endhead
 			0 & Node reports failure if unable to connect to a local tor control connection. & Stor throws an exception, mentioning that a connection could not be made and explaining how to fix it. & Case not checked. \newline Exception not thrown. & Pass \\ \hline
 			
 			1 & New node creates a hidden service & Stor finds no existing hidden service and creates one using the control connection. Can be tested by establishing a connection to the hidden service through Tor. & Failure to detect no existing hidden service exists. \newline Hidden service is not created. & Pass \\ \hline
 			
 			2 & Read configuration and use parameters & Stor uses the configuration file to establish a secure control connection to the local tor instance. & Does not read config. \newline Does not use values in config. & Pass \\ \hline
-		\end{tabular}
-	\end{table}
-\end{landscape}
+			
+			3 & Web interface accessible & Requests are made through the locally bound interface and through the hidden service interface. Responses are expected on both. & Does not bind to an interface.\newline Request not handled. & Pass \\ \hline
+			
+			4 & Valid selective polling response & Packet is given to the node at a known time $t$ and polling requests made before/after this time to ensure the packet does not appear for a request before $t$, but appears for requests after $t$. & List of packets is not as expected. & Pass \\ \hline
 
-\subsection*{Startup Self-Tests}
-\begin{enumerate}
-	\item Persistent database is started and checked to be working as expected by running a query on the database structure and size
-\end{enumerate}
+			5 & Node accepts (POST) forwarded data & Some data is forwarded to the node to check acceptance. & Request not handled & Pass \\ \hline
+			
+			6 & Node accepts forwarded packet & Node made to forward packet to self. & Packet forwarding/receipt not handled correctly. & Pass \\ \hline
+			
+			7 &
+			Node accepts only valid packets &
+			Invalid packets (invalid PoW, expiry, malformed) are forwarded to the node and not stored. &
+			Node stores invalid packet &
+			Pass \\ \hline
+			
+			8 &
+			Node handles malformed requests gracefully &
+			Malformed serialised forms are sent to the node and a bad request error code returned. &
+			Node throws exception and crashes &
+			Pass \\ \hline
+			
+			9 &
+			Information response &
+			Node is queried about its accepted proof-of-work algorithms and responds with a list. &
+			Request not handled &
+			Pass \\ \hline
+			
+			10 &
+			Node discovery &
+			A node with some knowledge of other active nodes is queried and the list of these nodes is given. &
+			Request not handled \newline Missing nodes &
+			Pass \\ \hline
+			
+			11 &
+			Key zeroisation &
+			Hooks are used to clear any keys from memory upon shutdown or instance finalisation. &
+			Hooks not fired \newline Keys not cleared &
+			Fail \\ \hline
+		
+			12 &
+			Nodes blacklisted after malicious behaviour &
+			Nodes not following the protocol are blacklisted. &
+			Not implemented &
+			Fail \\ \hline
+
+			13 &
+			API sends &
+			The send function inserts a message into the network. &
+			Message not inserted &
+			Pass \\ \hline
+
+			14 &
+			API receives &
+			The receive function gets a message for a given identity. &
+			Hook into live packet feed fail \newline Message not received &
+			Pass \\ \hline
+
+			15 &
+			.onion addresses resolved locally &
+			Hidden service addresses are resolved locally only. &
+			Resolution is passed through to normal DNS servers &
+			Pass \\ \hline
+			
+			16 &
+			Rejection of misclassified packets &
+			A packet with the wrong class flag is not accepted. &
+			Class flag is not used as a measure of validity &
+			Pass \\ \hline
+			
+			17 &
+			Time zones not leaked &
+			All time zones used should be GMT only, even on foreign systems. &
+			Non-GMT time zones are used &
+			Pass \\ \hline
+	\end{longtable}
+\end{landscape}

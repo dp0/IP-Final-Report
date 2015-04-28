@@ -1,9 +1,13 @@
 \section{Simulator}
 	\label{simulator}
+	\justifying
+	\setlength{\parskip}{0.6\baselineskip}
+	\setlength{\parindent}{0pt}
 	In order to assess network metrics to aid design, a simulator was required. Initially, existing tools were explored to find a simulator, but none were found to give the freedom required.
 	
-	It was decided to write a custom tool for modelling the logic of different networks while also measuring performance. This tool, called ResourceSimulator, revolves around each agents and tasks. Each agent has some resources (such as CPU and network). Tasks are assigned to agents, and consume resources for the agents in question. Some tasks, such as in network transfers, are simultaneously assigned to 2 agents. Tasks may depend on other tasks to complete before they can be started. 
+	It was decided to write a custom tool for modelling the logic of different networks while also measuring performance. This tool, called ResourceSimulator, revolves around agents and tasks. Each agent has some resources (such as CPU and network). Tasks are assigned to agents, and consume resources for the agents in question. Some tasks, such as in network transfers, are simultaneously assigned to 2 agents and must be performed by both agents at the same time. Tasks may depend on other tasks to complete before they can be started. 
 	
-	ResourceSimulator determines which tasks can be completed by performing a topological sort on the tasks by dependency. Of these tasks available for execution, a FIFO scheduling algorithm determines the largest set of tasks that can be executed, given that only one task can consume a resource on an agent at a given instant.
+	ResourceSimulator determines which tasks can be completed by performing a topological sort on the tasks by dependency. Of these tasks available for execution, a FIFO scheduling algorithm determines the largest set of tasks that can be executed given that only one task can consume a resource on an agent at a given instant.
 	
 	Stimulations are performed at intervals to assign tasks to agents periodically.
+	\raggedright

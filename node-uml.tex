@@ -1,5 +1,4 @@
-\begin{figure}[!h]
-	\begin{center}
+\begin{center}
 		\begin{tikzpicture}
 		\begin{umlseqdiag}
 		\umlobject[class=Node]{x}
@@ -24,6 +23,24 @@
 		%\umlnote[x=2, y=-11]{check}{Check node is active or not}
 		\end{umlseqdiag}
 		\end{tikzpicture}
-	\end{center}
-	\caption{Node Discovery Sequence Diagram\label{fig:node-discovery-seq}}
-\end{figure}
+	
+	\captionof{figure}{Node Discovery Sequence Diagram\label{fig:node-discovery-seq}}
+\end{center}
+
+\begin{center}
+	\begin{tikzpicture} % [show background grid ]
+	
+	\umlclass[simple=true,type=class,x=0,y=0]{Packet}{}{}
+	\umlclass[simple=false,type=abstract,x=-3,y=-5]{ProofOfWork}{POWAlgorithm : algorithm\\PayloadHash : binary\\Proof : binary\\ValidFrom : timestamp\\ValidTo : timestamp}{}
+	\umlclass[simple=false,type=abstract,x=3,y=-5]{Payload}{\umlvirt{classFlag : byte}\\message : binary}{}
+	\umlclass[simple=true,type=class,x=-1,y=-9]{BroadcastPayload}{}{}
+	\umlclass[simple=true,type=class,x=4,y=-9]{DataPayload}{}{}
+
+	\umlcompo[attr1=1|, attr2=1|, pos2=0.5]{Packet}{ProofOfWork}
+	\umlcompo[attr1=1|, attr2=1|, pos2=0.5]{Packet}{Payload}
+	
+	\umlinherit{BroadcastPayload}{Payload}
+	\umlinherit{DataPayload}{Payload}
+	\end{tikzpicture}
+	\captionof{figure}{Node Packet Class Structure\label{fig:node-uml-class}}
+\end{center}

@@ -1,6 +1,4 @@
-\vspace*{\fill}
-\begin{figure}[!hbt]
-	\begin{center}
+\begin{center}
 		\begin{tikzpicture} % [show background grid ]
 		
 		\umlclass[simple=false,type=class,x=0,y=1]{StorAPI}{stor : StorNode}{send(identity : PublicIdentity, message : binary)\\receive(identity : PrivateIdentity) : binary}
@@ -12,16 +10,13 @@
 		
 		\umluniaggreg[attr1=1|listens for, attr2=0..*|,pos1=0.2,pos2=0.8]{StorAPI}{PrivateIdentity}
 		
-		\umlcompo[attr1=1|, attr2=1|]{Identity}{PublicIdentity}
+		\umlcompo[attr1=1|, attr2=1|, pos2=0.5]{Identity}{PublicIdentity}
 		
 		\umlcompo[attr1=1|, attr2=1|]{Identity}{PrivateIdentity}
 		\end{tikzpicture}
-	\end{center}
-	\caption{API Class Diagram\label{fig:api-uml-design}}
-\end{figure}
-\vspace*{\fill}
-\begin{figure}[!hbt]
-	\begin{center}
+	\captionof{figure}{API Class Diagram\label{fig:api-uml-design}}
+\end{center}
+\begin{center}
 		\begin{tikzpicture}
 		\begin{umlseqdiag}
 		\umlobject[class=Application]{app}
@@ -38,12 +33,9 @@
 		
 		\end{umlseqdiag}
 		\end{tikzpicture}
-	\end{center}
-	\caption{API Send Sequence Diagram}
-\end{figure}
-\vspace*{\fill}
-\begin{figure}[!hbt]
-	\begin{center}
+	\captionof{figure}{API Send Sequence Diagram}
+\end{center}
+\begin{center}
 		\begin{tikzpicture}
 		\begin{umlseqdiag}
 		\umlobject[class=Application]{app}
@@ -63,7 +55,5 @@
 		\end{umlcall}
 		\end{umlseqdiag}
 		\end{tikzpicture}
-	\end{center}
-	\caption{API Receive Sequence Diagram}
-\end{figure}
-\vspace*{\fill}
+	\captionof{figure}{API Receive Sequence Diagram}
+\end{center}

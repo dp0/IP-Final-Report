@@ -1,8 +1,7 @@
-\begin{figure}[!h]
-	\begin{center}
+\begin{center}
 		\begin{tikzpicture}
 		\umlactor[y=1]{Node}
-		\begin{umlsystem}[fill=red!10]{Internodal Communications}
+		\begin{umlsystem}[]{Internodal Communications}
 		\umlusecase[x=10,y=0,fill=blue!10,name=reqinfo]{Request Info}
 		\umlusecase[x=7,y=-1,fill=blue!10,name=reqpos]{Request Possession}
 		\umlusecase[x=4,y=-2,fill=blue!10,name=reqnodes]{Request Nodes}
@@ -24,11 +23,9 @@
 		\umlinclude[]{respos}{reqpos}
 		
 		\end{tikzpicture}
-	\end{center}
-	\caption{Protocol's Internodal Communications Use Case Diagram\label{fig:protointernodalconusecase}}
-\end{figure}
-\begin{figure}[!h]
-	\begin{center}
+	\captionof{figure}{Protocol's Internodal Communications Use Case Diagram\label{fig:protointernodalconusecase}}
+\end{center}
+\begin{center}
 		\begin{tikzpicture} % [show background grid ]
 		
 		\umlclass[simple=false,type=class,x=0,y=0]{Node}{pseudoidentity : Identifier}{}
@@ -54,12 +51,11 @@
 		\umlaggreg[angle1=-80, angle2=-130, loopsize=2cm, attr1=|1, attr2=connected to|1..*]{Node}{Node}
 		
 		\end{tikzpicture}
-	\end{center}
-	\caption{Protocol Class Diagram}
-\end{figure}
+	\vspace*{-1.5cm}
+	\captionof{figure}{Protocol Class Diagram}
+\end{center}
 
-\begin{figure}[!hbt]
-	\begin{center}
+\begin{center}
 		\begin{tikzpicture}
 		\begin{umlseqdiag}
 		\umlobject[class=Node]{a}
@@ -79,12 +75,11 @@
 		\end{umlcall}
 		\end{umlseqdiag}
 		\end{tikzpicture}
-	\end{center}
-	\caption{Protocol Selective Polling Sequence Diagram}
-\end{figure}
+	
+	\captionof{figure}{Protocol Selective Polling Sequence Diagram}
+\end{center}
 
-\begin{figure}[!hbt]
-	\begin{center}
+\begin{center}
 		\begin{tikzpicture}
 		\begin{umlseqdiag}
 		\umlobject[class=Node]{a}
@@ -95,6 +90,6 @@
 		\end{umlcall}
 		\end{umlseqdiag}
 		\end{tikzpicture}
-	\end{center}
-	\caption{Protocol Active Forwarding Sequence Diagram}
-\end{figure}
+	
+	\captionof{figure}{Protocol Active Forwarding Sequence Diagram}
+\end{center}
