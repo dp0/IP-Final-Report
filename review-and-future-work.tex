@@ -11,6 +11,8 @@
 	\subsection{Critical Evaluation}
 		The project has been quite successful in achieving the original goals: a framework for sending and receiving messages anonymously and asynchronously has been designed, implemented and released under a FOSS license. 
 		
+		In comparison to similar systems, Stor provides similar functionality to Bitmessage, while adding flexibility and the key feature of keeping users anonymous. The main advantages over Freenet are the use of a large anonymity layer and the ability to use the network for sending and receiving messages, as opposed to storing and retrieving.
+		
 		As with any product making claims about security, it is necessary for independent audit to investigate the source code for any potential issues.
 		
 		Several features that have been investigated in the design were not implemented. Streams were originally intended to be supported, but due to the security considerations of having a small network initially, where there is high potential for isolation attacks, this will be left for an extension as the network grows. Zeroisation of keys was identified and investigated for the node/API implementation, but not achieved due to technical limitations both with Java and some libraries included. While some zeroisation in some circumstances may occur, Stor makes no guarantees.
